@@ -8,7 +8,7 @@ public class DiceRoll : MonoBehaviour {
     private Rigidbody rigidBody;
     public float maxForce;
 
-    public static int diceSurfaceInfo;
+    public int diceSurfaceInfo;
 
 	// Use this for initialization
 	void Start () {

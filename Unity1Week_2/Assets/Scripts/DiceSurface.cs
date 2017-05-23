@@ -6,9 +6,13 @@ public class DiceSurface : MonoBehaviour {
 
     [SerializeField]
     private int thisSurfaceNum;
+    [SerializeField]
+    private int diceNum;
+    [SerializeField]
+    private DiceRoll diceRoll;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 		
 	}
 
@@ -19,13 +23,13 @@ public class DiceSurface : MonoBehaviour {
     {
         int getSurfaceNum = (7 - thisSurfaceNum);
         Debug.Log("今一番上にあるのはコレ:"+getSurfaceNum);
-        DiceRoll.diceSurfaceInfo = getSurfaceNum;
+        diceRoll.diceSurfaceInfo = getSurfaceNum;
     }
     /// <summary>
     /// 離れたら0を返して何もとれてないことを伝える.
     /// </summary>
     void OnTriggerExit()
     {
-        DiceRoll.diceSurfaceInfo = 0;
+        diceRoll.diceSurfaceInfo = 0;
     }
 }
