@@ -13,21 +13,15 @@ public class DiceSetting : MonoBehaviour {
 
     private string textureFilePath = "Textures/Actions/";
 
-    void Start()
-    {
-        IniDiceSet();
-    }
-
     /// <summary>
     /// ダイスの初期化
     /// </summary>
-	void IniDiceSet()
+	public void IniDiceSet(ActionList.ACTIONTYPE[] actionTypes)
     {
+        actionType = actionTypes;
         for (int num = 0;num < 6;num++)
         {
-            Debug.Log(ActionList.textureName[actionType[num].GetHashCode()]);
-            Debug.Log(textureFilePath + ActionList.textureName[actionType[num].GetHashCode()]);
-            spriteRenderer[num].sprite = Resources.Load<Sprite>(textureFilePath + ActionList.textureName[actionType[num].GetHashCode()]);
+           spriteRenderer[num].sprite = Resources.Load<Sprite>(textureFilePath + ActionList.textureName[actionType[num].GetHashCode()]);
         }
     }
     /// <summary>

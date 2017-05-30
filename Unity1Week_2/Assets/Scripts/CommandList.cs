@@ -12,9 +12,9 @@ namespace BattleCommand
         /// <summary>
         /// 通常攻撃処理
         /// </summary>
-        public static void Atack(Text text, string actorName, string targetName,ref int targetLifePoint, int atackerAtack, int targetDefence, bool isGuard,bool isPlayer,bool isMiss)
+        public static void Atack(Text text, string actorName, string targetName,ref int targetLifePoint, int atackerAtack, int targetDefence, bool isGuard,bool isPlayer)
         {
-            if (MissText(text, isMiss, isPlayer)) return;
+            //if (MissText(text, isMiss, isPlayer)) return;
 
             Defence(text,isGuard,isPlayer);
             TextSystem.AtackStartText(text, actorName);
@@ -33,9 +33,9 @@ namespace BattleCommand
         /// <param name="targetLifePoint"></param>
         /// <param name="atackerMagic"></param>
         /// <param name="targetMind"></param>
-        public static void SpecialAtack(Text text, string actorName, string skillName, string targetName,ref int targetLifePoint, int atackePoint, int targetPoint, bool isMagic, bool isGuard,bool isPlayer, bool isMiss)
+        public static void SpecialAtack(Text text, string actorName, string skillName, string targetName,ref int targetLifePoint, int atackePoint, int targetPoint, bool isMagic, bool isGuard,bool isPlayer)
         {
-            if (MissText(text, isMiss, isPlayer)) return;
+            //if (MissText(text, isMiss, isPlayer)) return;
             
             Defence(text, isGuard, isPlayer);
             int damege = 0;
@@ -106,16 +106,9 @@ namespace BattleCommand
         /// <param name="text"></param>
         /// <param name="isMiss"></param>
         /// <param name="isPlayer"></param>
-        public static bool MissText(Text text,bool isMiss,bool isPlayer)
+        public static void MissText(Text text,bool isPlayer)
         {
-            if (isMiss)
-            {
-                TextSystem.MissText(text,isPlayer);
-                return true;
-            }else
-            {
-                return false;
-            }
+            TextSystem.MissText(text, isPlayer);
         }
 
     }

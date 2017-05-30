@@ -15,6 +15,7 @@ namespace Action {
             ATACK,
             MAGICSKILL,
             ATACKSKILL,
+            SUPPORTSKILL,
             HEAL,
             DODGE,
             GUARD,
@@ -29,8 +30,9 @@ namespace Action {
         {
             "None",
             "Atack",
-            "Magic",
+            "MagicSkill",
             "AtackSkill",
+            "SupportSkill",
             "Heal",
             "Dodge",
             "Guard",

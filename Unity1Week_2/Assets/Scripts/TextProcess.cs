@@ -64,7 +64,7 @@ namespace TextProcess
                 textData = "あなたたちは うまく れんけいが とれず\n こうげきに うつることが できなかった...";
             }else
             {
-                textData = "まもの の こうげきは \n しっぱいに おわった !!";
+                textData = "まもの は あなたたちの \n ようすをみて こうげきをやめた !!";
             }
             text.text = textData;
         }
@@ -124,6 +124,42 @@ namespace TextProcess
             }
             text.text = textData;
         }
+
+        /// <summary>
+        /// ステータスの増加,減少.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="inUpDownPoint"></param>
+        /// <param name="statesName"></param>
+        /// <param name="targetName"></param>
+        /// <param name="isUp"></param>
+        /// <param name="isPlayer"></param>
+        public static void StatesUpDownText(Text text, int inUpDownPoint, string statesName, string targetName, bool isUp)
+        {
+            string textData;
+            if (isUp)
+            {
+                textData = targetName + " の " + statesName + " が" + inUpDownPoint + "あがった !!";
+            }else
+            {
+                textData = targetName + " の " + statesName + " が" + inUpDownPoint + "さがった !!";
+            }
+            text.text = textData;
+        }
+
+        /// <summary>
+        /// ステータスが元に戻る.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="targetName"></param>
+        /// <param name="statesName"></param>
+        public static void StatesReset(Text text,string targetName,string statesName)
+        {
+            string textData;
+            textData = targetName + " の " + statesName + " が" + "もとにもどった。";
+            text.text = textData;
+        }
+        
 
     }
 }

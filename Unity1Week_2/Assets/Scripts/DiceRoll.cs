@@ -8,12 +8,12 @@ public class DiceRoll : MonoBehaviour {
     private Rigidbody rigidBody;
     public float maxForce;
 
-    public int diceSurfaceInfo;
+    public int diceSurfaceInfo = 1;
 
 	// Use this for initialization
 	void Start () {
-		
-	}
+        diceSurfaceInfo = 1;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -44,11 +44,11 @@ public class DiceRoll : MonoBehaviour {
     {
         if (diceSurfaceInfo == 0)
         {
-            Debug.Log("もう一度飛ばすよ");
+            //Debug.Log("もう一度飛ばすよ");
             RollDice();
         }else
         {
-            Debug.Log("とまったよ");
+            //Debug.Log("とまったよ");
         }
     }
 

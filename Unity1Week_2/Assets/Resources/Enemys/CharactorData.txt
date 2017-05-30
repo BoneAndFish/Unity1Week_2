@@ -1,0 +1,8 @@
+﻿Number,NestNumber,Name,Type,ＧameName,LifePoint,Atack,Defence,Magic,Mind,LevelUpLife,LevelUpAtack,LevelUpDefence,LevelUpMagic,LevelUpMind,Action1,Action2,Action3,Action4,Action5,Action6,DropItem,RareDropItem
+1,1,Gobrin,normal,したっぱゴブリン,6,4,2,1,1,3,2,1,1,1,戦う,戦う,ミス,ミス,戦う,戦う,木の剣,どんぐり
+2,1,MadSnaile,normal,マッドスネイル,15,3,4,1,1,2,1,2,1,0,戦う,戦う,ミス,ミス,弱体:攻撃ダウン,防御,なし,スネイルの殻
+3,1,Skelton,normal,骸骨の戦士,5,7,0,0,0,2,3,2,1,0,戦う,戦う,ミス,ミス,ミス,ミス,骨の剣,怨嗟の証
+4,1,GobrinBogard,normal,オラつきゴブリン,10,6,2,1,1,2,2,1,1,1,戦う,戦う,ミス,ミス,戦う,戦う,ポーション,大きな石ころ
+5,1,PoizonFlog,normal,毒カエル,8,3,2,1,4,2,1,1,1,1,戦う,戦う,戦う,ミス,弱体:防御ダウン,魔法:ポイズン,毒消し草,饗宴の毒酒
+6,1,MadPlant,normal,必殺の悪魔植物,5,4,2,0,0,2,2,1,1,0,必殺の一撃,ミス,ミス,必殺の一撃,ミス,ミス,なし,悪魔植物の種
+7,1,GobrinRider,Boss,ゴブリンボアライダー,55,10,5,3,2,5,3,1,1,1,戦う,必殺の一撃,戦う,防御,魔法：攻撃アップ,ミス,ゴブリンの弓矢,ゴブリンボアの牙

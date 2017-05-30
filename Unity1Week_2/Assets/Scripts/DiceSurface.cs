@@ -5,7 +5,7 @@ using UnityEngine;
 public class DiceSurface : MonoBehaviour {
 
     [SerializeField]
-    private int thisSurfaceNum;
+    public int thisSurfaceNum;
     [SerializeField]
     private int diceNum;
     [SerializeField]
