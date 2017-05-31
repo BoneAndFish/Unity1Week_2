@@ -14,7 +14,8 @@ public class DataSetting : MonoBehaviour {
 
     public string[] line;
 
-    public GameObject dicePrefab;
+    public GameObject enemyDicePrefab;
+    public GameObject playerDicePrefab;
 
     [System.Serializable]
     public struct CharactorData{
@@ -47,22 +48,30 @@ public class DataSetting : MonoBehaviour {
     public States[] playerStates;
 
 	// Use this for initialization
-	void Start () {
+	void Start () {     
+    }
+
+    public void IniDatas()
+    {
         SetEnemyDatas();
         SetPlayerDatas();
-        //DiceCreateInstance("Gobrin");
+        SetEnemyDatas();
+        //DiceCreateInstance("Gobrin"); 
+        Invoke("TestDiceInstance", 1f);
     }
 	
-	// Update is called once per frame
-	void Update () {
-        SetEnemyDatas();
+    public void TestDiceInstance()
+    {
+        DiceCreateInstance("Gobrin");
+        PlayerDiceCreateInstance("Dicelot");
     }
+
     /// <summary>
     /// 敵のデータをセッティング.
     /// </summary>
     public void SetEnemyDatas()
     {
-        LoadTextData(enemyDataPath);
+        LoadTextData(enemyDataPath,ref enemyDatas);
         StatesSet(ref enemyStates,ref enemyDatas);
         //EnemyStatesSet();
     }
@@ -72,7 +81,7 @@ public class DataSetting : MonoBehaviour {
     /// </summary>
     public void SetPlayerDatas()
     {
-        LoadTextData(playerDataPath);
+        LoadTextData(playerDataPath,ref playerDatas);
         StatesSet(ref playerStates, ref playerDatas);
     }
 
@@ -90,8 +99,26 @@ public class DataSetting : MonoBehaviour {
                 number = states.number;
             }
         }
-        enemyStates[number].DiceSurfaceSetting(dicePrefab);
-        Instantiate(dicePrefab,transform.position,transform.rotation);
+        enemyStates[number].DiceSurfaceSetting(enemyDicePrefab);
+        Instantiate(enemyDicePrefab,transform.position,transform.rotation);
+    }
+
+    /// <summary>
+    /// プレイヤーのダイスの生成.
+    /// </summary>
+    /// <param name="playerNum"></param>
+    public void PlayerDiceCreateInstance(string diceName)
+    {
+        int number = 0;
+        foreach (CharactorData states in playerDatas)
+        {
+            if (diceName == states.gameName)
+            {
+                number = states.number;
+            }
+        }
+        playerStates[number].DiceSurfaceSetting(playerDicePrefab);
+        Instantiate(playerDicePrefab, transform.position, transform.rotation);
     }
 
     /// <summary>
@@ -102,7 +129,7 @@ public class DataSetting : MonoBehaviour {
     void StatesSet(ref States[] states,ref CharactorData[] charactorData)
     {
         states = new States[charactorData.Length];
-        for (int dataNum = 0; dataNum < enemyStates.Length; dataNum++)
+        for (int dataNum = 0; dataNum < states.Length; dataNum++)
         {
             states[dataNum] = new States();
             states[dataNum].IniStates(charactorData[dataNum].gameName, charactorData[dataNum].dataName, charactorData[dataNum].life, charactorData[dataNum].atack, charactorData[dataNum].defence, charactorData[dataNum].magic, charactorData[dataNum].mind);
@@ -114,23 +141,23 @@ public class DataSetting : MonoBehaviour {
     /// <summary>
     /// テキストデータのロード.
     /// </summary>
-    void LoadTextData(string dataPath)
+    void LoadTextData(string dataPath,ref CharactorData[] datas)
     {
-        TextAsset enemyTextAsset = Resources.Load(dataPath)as TextAsset;
-        string enemyDataText = enemyTextAsset.text;
-        text = enemyDataText;
+        TextAsset textAsset = Resources.Load(dataPath)as TextAsset;
+        string dataText = textAsset.text;
+        text = dataText;
         System.StringSplitOptions option = System.StringSplitOptions.RemoveEmptyEntries;
-        string[] lines = enemyDataText.Split(new string[] {"\r","\n" },option);
+        string[] lines = dataText.Split(new string[] {"\r","\n" },option);
         line = lines;
         string[] lineWidth = lines[0].Split(new string[] { ","},option);
         int dataWidth = lineWidth.Length;
         int dataLength = lines.Length;
-        enemyDatas = new CharactorData[dataLength-1];
+        datas = new CharactorData[dataLength-1];
         int dataCount = 0;
 
         for (int lengthNum = 1; lengthNum < dataLength; lengthNum++)
         {
-            DataSplitAndInsert(dataCount,lines[lengthNum],option);
+            DataSplitAndInsert(dataCount,lines[lengthNum],option,ref datas);
             dataCount++;
         }
     }
@@ -138,33 +165,33 @@ public class DataSetting : MonoBehaviour {
     /// <summary>
     /// 敵のデータを数値にセット.
     /// </summary>
-    void DataSplitAndInsert(int dataCount,string dataLine,System.StringSplitOptions option)
+    void DataSplitAndInsert(int dataCount,string dataLine,System.StringSplitOptions option,ref CharactorData[] charaDatas)
     {
         string[] datas = dataLine.Split(new string[] { "," }, option);
         int count = 0;
-        enemyDatas[dataCount].number = int.Parse(datas[count++]);
-        enemyDatas[dataCount].nestNumber = int.Parse(datas[count++]);
-        enemyDatas[dataCount].dataName = datas[count++];
-        enemyDatas[dataCount].type = datas[count++];
-        enemyDatas[dataCount].gameName = datas[count++];
-        enemyDatas[dataCount].life = int.Parse(datas[count++]);
-        enemyDatas[dataCount].atack = int.Parse(datas[count++]);
-        enemyDatas[dataCount].defence = int.Parse(datas[count++]);
-        enemyDatas[dataCount].magic = int.Parse(datas[count++]);
-        enemyDatas[dataCount].mind = int.Parse(datas[count++]);
-        enemyDatas[dataCount].levelUpLife = int.Parse(datas[count++]);
-        enemyDatas[dataCount].levelUpAtack = int.Parse(datas[count++]);
-        enemyDatas[dataCount].levelUpDefence = int.Parse(datas[count++]);
-        enemyDatas[dataCount].levelUpMagic = int.Parse(datas[count++]);
-        enemyDatas[dataCount].levelUpMind = int.Parse(datas[count++]);
-        enemyDatas[dataCount].action1 = datas[count++];
-        enemyDatas[dataCount].action2 = datas[count++];
-        enemyDatas[dataCount].action3 = datas[count++];
-        enemyDatas[dataCount].action4 = datas[count++];
-        enemyDatas[dataCount].action5 = datas[count++];
-        enemyDatas[dataCount].action6 = datas[count++];
-        enemyDatas[dataCount].dropItemName = datas[count++];
-        enemyDatas[dataCount].rareDropName = datas[count];
+        charaDatas[dataCount].number = int.Parse(datas[count++]);
+        charaDatas[dataCount].nestNumber = int.Parse(datas[count++]);
+        charaDatas[dataCount].dataName = datas[count++];
+        charaDatas[dataCount].type = datas[count++];
+        charaDatas[dataCount].gameName = datas[count++];
+        charaDatas[dataCount].life = int.Parse(datas[count++]);
+        charaDatas[dataCount].atack = int.Parse(datas[count++]);
+        charaDatas[dataCount].defence = int.Parse(datas[count++]);
+        charaDatas[dataCount].magic = int.Parse(datas[count++]);
+        charaDatas[dataCount].mind = int.Parse(datas[count++]);
+        charaDatas[dataCount].levelUpLife = int.Parse(datas[count++]);
+        charaDatas[dataCount].levelUpAtack = int.Parse(datas[count++]);
+        charaDatas[dataCount].levelUpDefence = int.Parse(datas[count++]);
+        charaDatas[dataCount].levelUpMagic = int.Parse(datas[count++]);
+        charaDatas[dataCount].levelUpMind = int.Parse(datas[count++]);
+        charaDatas[dataCount].action1 = datas[count++];
+        charaDatas[dataCount].action2 = datas[count++];
+        charaDatas[dataCount].action3 = datas[count++];
+        charaDatas[dataCount].action4 = datas[count++];
+        charaDatas[dataCount].action5 = datas[count++];
+        charaDatas[dataCount].action6 = datas[count++];
+        charaDatas[dataCount].dropItemName = datas[count++];
+        charaDatas[dataCount].rareDropName = datas[count];
     }
 
 }

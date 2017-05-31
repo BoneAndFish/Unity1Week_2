@@ -225,7 +225,7 @@ public class States {
     }
 
     /// <summary>
-    /// 出現時のステータスを設定する.
+    /// 出現時およびレベルアップ時のステータスを設定する.
     /// </summary>
     public void NowStatesSetting()
     {

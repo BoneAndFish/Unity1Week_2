@@ -18,6 +18,11 @@ namespace TextProcess
             text.text = actorName + " の こうげき !";
         }
 
+        /// <summary>
+        /// 防御テキスト.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="isPlayer"></param>
         public static void DefenceText(Text text,bool isPlayer)
         {
             string textData;
@@ -39,7 +44,7 @@ namespace TextProcess
         /// <param name="damege"></param>
         public static void PlayerAtackText(Text text,string targetName,int damege)
         {
-            text.text = targetName + " は " + damege + "の ダメージ をうけた !!";            
+            text.text += "\n" + targetName + " は " + damege + "の ダメージ をうけた !!";            
         }
 
         /// <summary>
@@ -49,7 +54,7 @@ namespace TextProcess
         /// <param name="targetName"></param>
         public static void BeatEnemyText(Text text,string targetName)
         {
-            text.text = targetName + " を やっつけた !!";
+            text.text += "\n" + targetName + " を やっつけた !!";
         }
 
         /// <summary>
@@ -79,13 +84,18 @@ namespace TextProcess
             text.text = "なんということだ...\nあなたたちは たおされてしまった... ";
         }
 
+        public static void NextTurnText(Text text)
+        {
+            text.text = "さあ たたかいは まだ つづいているぞ !!";
+        }
+
         /// <summary>
         /// 勝利処理
         /// </summary>
         /// <param name="text"></param>
         public static void WinText(Text text)
         {
-            text.text = "みごと おそいくる てき を しりぞけた !";
+            text.text = "みごと おそいくる てき を しりぞけた !!";
         }
 
         /// <summary>
@@ -117,12 +127,12 @@ namespace TextProcess
             string textData;
             if (isPlayer)
             {
-                textData = "あなたたちの たいりょくが" + healValue + "かいふくした !!";
+                textData = "\n" + "あなたたちの たいりょくが" + healValue + "かいふくした !!";
             }else
             {
-                textData = "まもの の たいりょくが" + healValue + "かいふくした !!";
+                textData = "\n" + "まもの の たいりょくが" + healValue + "かいふくした !!";
             }
-            text.text = textData;
+            text.text += textData;
         }
 
         /// <summary>
@@ -139,12 +149,12 @@ namespace TextProcess
             string textData;
             if (isUp)
             {
-                textData = targetName + " の " + statesName + " が" + inUpDownPoint + "あがった !!";
+                textData = "\n" + targetName + " の " + statesName + " が" + inUpDownPoint + "あがった !!";
             }else
             {
-                textData = targetName + " の " + statesName + " が" + inUpDownPoint + "さがった !!";
+                textData = "\n" + targetName + " の " + statesName + " が" + inUpDownPoint + "さがった !!";
             }
-            text.text = textData;
+            text.text += textData;
         }
 
         /// <summary>
@@ -156,8 +166,8 @@ namespace TextProcess
         public static void StatesReset(Text text,string targetName,string statesName)
         {
             string textData;
-            textData = targetName + " の " + statesName + " が" + "もとにもどった。";
-            text.text = textData;
+            textData = "\n" + targetName + " の " + statesName + " が" + "もとにもどった。";
+            text.text += textData;
         }
         
 

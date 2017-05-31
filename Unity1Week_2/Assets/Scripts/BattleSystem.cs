@@ -11,20 +11,24 @@ public class BattleSystem : MonoBehaviour {
     public List<States> battleJoinedEnemyStates = new List<States>();//登場させる敵のデータ.
     public List<States> battleEnemyStates = new List<States>();//実際に戦闘する敵のデータ.
 
-    public DataSetting enemyDataSetting;
+    public DataSetting dataSetting;
 
     public Text text;
+    public bool isPlayerTurn;
 
 	// Use this for initialization
 	void Start () {
         GameLevelManager.IniGameLevel();
+        dataSetting.IniDatas();
         GetSummonEnemysData();
-        //SpownEnemy("Gobrin");
+        PlayerStatesSet();
+        SpownEnemy("Gobrin");
     }
 
     public void TestBattleStart()
     {
-        BattlleDiceRollStart(playerStates,battleEnemyStates[0]);
+        isPlayerTurn = true;
+        BattlleDiceRollStart(playerStates,battleEnemyStates[0]);        
     }
 
     /// <summary>
@@ -40,14 +44,33 @@ public class BattleSystem : MonoBehaviour {
         StartCoroutine(BattleProcessStart(actor,target));
     }
 
+    /// <summary>
+    /// 戦闘処理の開始.
+    /// </summary>
+    /// <param name="actor"></param>
+    /// <param name="target"></param>
+    /// <returns></returns>
     IEnumerator BattleProcessStart(States actor,States target)
     {
         int actionCount = 0;
+        bool battleEnd = false;
         while (actionCount < actor.diceRoll.Count)
-        {            
-            BattleProcess(actor,target);
+        {
+            battleEnd = BattleProcess(actor, target);
             actionCount++;
             yield return StartCoroutine("TextTimer");
+            if (battleEnd)
+            {
+                CommandList.WinPlayer(text);           
+            }else if(isPlayerTurn == false)
+            {
+                CommandList.NextTurn(text);
+            }
+        }
+        if (isPlayerTurn && battleEnd != true)
+        {
+            BattlleDiceRollStart(target, actor);
+            isPlayerTurn = false;
         }
     }
 
@@ -68,8 +91,9 @@ public class BattleSystem : MonoBehaviour {
     /// <summary>
     /// 交互にターンを行う.
     /// </summary>
-    public void BattleProcess(States actor,States target)
+    public bool BattleProcess(States actor,States target)
     {
+        bool battleEnd = false;
         Debug.Log("呼び出しました");
         for (int diceNum=0;diceNum < actor.diceRoll.Count;diceNum++)
         {
@@ -78,14 +102,14 @@ public class BattleSystem : MonoBehaviour {
             switch (actionType)
             {
                 case ActionList.ACTIONTYPE.ATACK:
-                    CommandList.Atack(text, actor.name, target.name, ref target.nowLifePoint, actor.nowAtackPower, target.nowDefencePower, target.isGuard, actor.isPlayer);
+                    battleEnd = CommandList.Atack(text, actor.name, target.name, ref target.nowLifePoint, actor.nowAtackPower, target.nowDefencePower, target.isGuard, actor.isPlayer);
                     break;
                 case ActionList.ACTIONTYPE.MISS:
                     CommandList.MissText(text, actor.isPlayer);
                     break;
             }
         }
-        
+        return battleEnd;
     }
 
     /// <summary>
@@ -103,13 +127,23 @@ public class BattleSystem : MonoBehaviour {
     /// <param name="dungeonNest"></param>
     public void EnemyStatesSet(GameLevelManager.DUNGEONNEST dungeonNest )
     {
-        foreach (DataSetting.CharactorData enemyData in enemyDataSetting.enemyDatas)
+        foreach (DataSetting.CharactorData enemyData in dataSetting.enemyDatas)
         {
             if(enemyData.nestNumber == dungeonNest.GetHashCode()){
-                States states = enemyDataSetting.enemyStates[enemyData.number-1];
+                States states = dataSetting.enemyStates[enemyData.number-1];
                 battleJoinedEnemyStates.Add(states);
             }
         }
+    }
+
+    /// <summary>
+    /// 味方のデータを格納する.
+    /// </summary>
+    public void PlayerStatesSet()
+    {
+        playerStates = dataSetting.playerStates[0];
+        playerStates.PlayerStatesSet();
+        playerStates.NowStatesSetting();
     }
 
     /// <summary>

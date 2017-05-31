@@ -1,0 +1,5 @@
+﻿Number,NestNumber,Name,Type,GameName,LifePoint,Atack,Defence,Magic,Mind,LevelUpLife,LevelUpAtack,LevelUpDefence,LevelUpMagic,LevelUpMind,Action1,Action2,Action3,Action4,Action5,Action6,DropItem,RareDropItem
+1,0,Dicelot,player,ダイスロット,15,5,5,5,5,5,1,1,1,1,戦う,戦う,ミス,ミス,防御,戦う,なし,なし
+2,0,KnightDice,dice,騎士のサイコロ,5,0,5,0,0,1,0,1,0,0,ミス,防御,特技:だいぼうぎょ,防御,特技:だいぼうぎょ,ミス,なし,なし
+3,0,FighterDice,dice,戦士のサイコロ,0,10,0,0,0,0,2,0,0,0,戦う,戦う,ひっさつのいちげき,ミス,ミス,戦う,なし,なし
+4,0,MageDice,dice,魔術師のサイコロ,0,0,0,10,0,0,0,0,2,0,ミス,魔法：マジックブラスト,ミス,魔法：マジックブラスト,魔法：マジックブラスト,ミス,なし,なし

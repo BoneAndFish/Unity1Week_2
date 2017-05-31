@@ -12,7 +12,7 @@ namespace BattleCommand
         /// <summary>
         /// 通常攻撃処理
         /// </summary>
-        public static void Atack(Text text, string actorName, string targetName,ref int targetLifePoint, int atackerAtack, int targetDefence, bool isGuard,bool isPlayer)
+        public static bool Atack(Text text, string actorName, string targetName,ref int targetLifePoint, int atackerAtack, int targetDefence, bool isGuard,bool isPlayer)
         {
             //if (MissText(text, isMiss, isPlayer)) return;
 
@@ -25,6 +25,7 @@ namespace BattleCommand
             }
             DamegeProcess.LifePointDown(ref targetLifePoint, damege);
             TextSystem.PlayerAtackText(text, targetName, damege);
+            return IsGameEnd(text, targetLifePoint, isPlayer, targetName);           
         }
 
         /// <summary>
@@ -33,7 +34,7 @@ namespace BattleCommand
         /// <param name="targetLifePoint"></param>
         /// <param name="atackerMagic"></param>
         /// <param name="targetMind"></param>
-        public static void SpecialAtack(Text text, string actorName, string skillName, string targetName,ref int targetLifePoint, int atackePoint, int targetPoint, bool isMagic, bool isGuard,bool isPlayer)
+        public static bool SpecialAtack(Text text, string actorName, string skillName, string targetName,ref int targetLifePoint, int atackePoint, int targetPoint, bool isMagic, bool isGuard,bool isPlayer)
         {
             //if (MissText(text, isMiss, isPlayer)) return;
             
@@ -51,9 +52,10 @@ namespace BattleCommand
                     damege = DamegeProcess.DefenceProcess(damege, 0.5f);
                 }
             }
-            TextSystem.SkillActiveText(text, actorName, skillName, isMagic);
-            DamegeProcess.LifePointDown(ref targetLifePoint, damege);
-            TextSystem.PlayerAtackText(text, targetName, damege);
+            TextSystem.SkillActiveText(text, actorName, skillName, isMagic);//スキル発動.
+            DamegeProcess.LifePointDown(ref targetLifePoint, damege);//ライフ減少.
+            TextSystem.PlayerAtackText(text, targetName, damege);//敵に攻撃.
+            return IsGameEnd(text,targetLifePoint,isPlayer, targetName);//どちらが死んだか.
         }
 
         /// <summary>
@@ -83,7 +85,7 @@ namespace BattleCommand
         /// <param name="text"></param>
         /// <param name="targetLifePoint"></param>
         /// <param name="isPlayer"></param>
-        public static void isGameEnd(Text text,int targetLifePoint,bool isPlayer)
+        public static bool IsGameEnd(Text text,int targetLifePoint,bool isPlayer,string targetName)
         {            
             if (targetLifePoint <= 0)
             {
@@ -94,10 +96,26 @@ namespace BattleCommand
                         break;
 
                     case false://勝利時.
-                        TextSystem.WinText(text);
+                        TextSystem.BeatEnemyText(text, targetName);
                         break;
                 }
+                return true;
             }
+            return false;
+        }
+
+        /// <summary>
+        /// 勝利処理.
+        /// </summary>
+        /// <param name="text"></param>
+        public static void WinPlayer(Text text)
+        {
+            TextSystem.WinText(text);
+        }
+
+        public static void NextTurn(Text text)
+        {
+            TextSystem.NextTurnText(text);
         }
 
         /// <summary>
