@@ -42,6 +42,7 @@ public class States {
     public string[] actions;
     public ActionList.ACTIONTYPE[] diceSurfaceAction;
     public List<DiceRoll> diceRoll = new List<DiceRoll>();
+    public List<SkillSet> skillSet = new List<SkillSet>();
     //public DiceSurface[] diceSurface;
 
     /// <summary>
@@ -190,7 +191,7 @@ public class States {
     {
         DiceSetting diceSetting = dicePrefab.GetComponent<DiceSetting>();
         diceSetting.IniDiceSet(diceSurfaceAction);
-        diceRoll.Add(dicePrefab.GetComponent<DiceRoll>());
+        //diceRoll.Add(dicePrefab.GetComponent<DiceRoll>());//ここを変えないとサイコロ回ってくれない.
     }
 
     /// <summary>

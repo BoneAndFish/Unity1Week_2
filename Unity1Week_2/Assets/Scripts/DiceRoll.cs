@@ -9,16 +9,12 @@ public class DiceRoll : MonoBehaviour {
     public float maxForce;
 
     public int diceSurfaceInfo = 1;
+    public bool diceRolled;
 
 	// Use this for initialization
 	void Start () {
         diceSurfaceInfo = 1;
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     void FixedUpdate()
     {
@@ -33,6 +29,7 @@ public class DiceRoll : MonoBehaviour {
     /// </summary>
     public void RollDice()
     {
+        diceRolled = false;
         Vector3 randomDirection = new Vector3(1f, Random.Range(0f, 1f), 1f);
         rigidBody.AddForce(randomDirection * Random.Range(maxForce/2,maxForce),ForceMode.Impulse);
         rigidBody.AddTorque(randomDirection * maxForce*1.15f,ForceMode.Impulse);
@@ -44,11 +41,8 @@ public class DiceRoll : MonoBehaviour {
     {
         if (diceSurfaceInfo == 0)
         {
-            //Debug.Log("もう一度飛ばすよ");
+            diceRolled = false;
             RollDice();
-        }else
-        {
-            //Debug.Log("とまったよ");
         }
     }
 

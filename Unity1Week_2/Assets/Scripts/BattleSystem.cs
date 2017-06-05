@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Action;
+using TextProcess;
 using BattleCommand;
 using UnityEngine.UI;
 
@@ -25,6 +26,9 @@ public class BattleSystem : MonoBehaviour {
         SpownEnemy("Gobrin");
     }
 
+    /// <summary>
+    /// テスト用.
+    /// </summary>
     public void TestBattleStart()
     {
         isPlayerTurn = true;
@@ -41,7 +45,49 @@ public class BattleSystem : MonoBehaviour {
         {
             actor.diceRoll[diceNum].RollDice();
         }
-        StartCoroutine(BattleProcessStart(actor,target));
+        StartCoroutine(DiceValueSet(actor,target));
+    }
+
+    /// <summary>
+    /// サイコロの値セット.
+    /// </summary>
+    /// <param name="actor"></param>
+    /// <returns></returns>
+    IEnumerator DiceValueSet(States actor,States target)
+    {
+        bool isSetOk = false;
+        while (isSetOk == false)
+        {
+            isSetOk = IsAtackPrepareComplete(actor);
+            Debug.Log(isSetOk);
+            yield return null;
+        }
+        StartCoroutine(BattleProcessStart(actor, target));
+    }
+
+    /// <summary>
+    /// 攻撃準備完了かどうか.
+    /// </summary>
+    /// <param name="actor"></param>
+    /// <returns></returns>
+    bool IsAtackPrepareComplete(States actor)
+    {
+        int num = 0;
+        int rollDiceNum = actor.diceRoll.Count;
+        foreach (DiceRoll diceRoll in actor.diceRoll)
+        {
+            if (diceRoll.diceRolled == true && diceRoll.diceSurfaceInfo != 0)
+            {
+                num++;
+            }
+        }
+        if (num == rollDiceNum)
+        {
+            return true;
+        }else
+        {
+            return false;
+        }        
     }
 
     /// <summary>
@@ -53,63 +99,104 @@ public class BattleSystem : MonoBehaviour {
     IEnumerator BattleProcessStart(States actor,States target)
     {
         int actionCount = 0;
-        bool battleEnd = false;
         while (actionCount < actor.diceRoll.Count)
         {
-            battleEnd = BattleProcess(actor, target);
+            yield return StartCoroutine(BattleProcess(actor, target));//戦闘処理.
             actionCount++;
-            yield return StartCoroutine("TextTimer");
-            if (battleEnd)
-            {
-                CommandList.WinPlayer(text);           
-            }else if(isPlayerTurn == false)
-            {
-                CommandList.NextTurn(text);
-            }
-        }
-        if (isPlayerTurn && battleEnd != true)
-        {
-            BattlleDiceRollStart(target, actor);
-            isPlayerTurn = false;
+            yield return BattleFinish(target,actor);
         }
     }
 
-    IEnumerator TextTimer()
+    /// <summary>
+    /// 次のテキストを表示するまでに待機する時間.
+    /// </summary>
+    /// <param name="waitTimer"></param>
+    /// <returns></returns>
+    IEnumerator TextTimer(float waitTimer)
     {
         float time = 0;
-        while (time < 0.75f)
+        while (time < waitTimer)
         {
             if (Input.GetMouseButtonDown(0))
             {
-                time = 1f;
+                time = waitTimer+1f;
             }
             time += Time.deltaTime;
             yield return Time.deltaTime;
         }
     }
 
+
     /// <summary>
-    /// 交互にターンを行う.
+    /// 行動決定からのターン処理.
     /// </summary>
-    public bool BattleProcess(States actor,States target)
+    IEnumerator BattleProcess(States actor,States target)
     {
-        bool battleEnd = false;
-        Debug.Log("呼び出しました");
         for (int diceNum=0;diceNum < actor.diceRoll.Count;diceNum++)
         {
             int diceSurfaceNumber = actor.diceRoll[diceNum].diceSurfaceInfo;
-            ActionList.ACTIONTYPE actionType = target.diceSurfaceAction[diceSurfaceNumber];
+            Debug.Log(diceSurfaceNumber);
+            ActionList.ACTIONTYPE actionType = actor.diceSurfaceAction[diceSurfaceNumber-1];
             switch (actionType)
             {
+                //攻撃処理.
                 case ActionList.ACTIONTYPE.ATACK:
-                    battleEnd = CommandList.Atack(text, actor.name, target.name, ref target.nowLifePoint, actor.nowAtackPower, target.nowDefencePower, target.isGuard, actor.isPlayer);
+                    int damege = CommandList.Atack(text, actor.name, target.name,ref target.nowLifePoint, actor.nowAtackPower, target.nowDefencePower, target.isGuard, actor.isPlayer);
+                    yield return TextTimer(1.0f);
+                    TextSystem.PlayerAtackText(text,target.name, damege);
+                    yield return TextTimer(1.0f);
                     break;
+                //攻撃失敗処理.
                 case ActionList.ACTIONTYPE.MISS:
                     CommandList.MissText(text, actor.isPlayer);
+                    yield return TextTimer(1.0f);
+                    break;
+                //防御失敗処理.
+                case ActionList.ACTIONTYPE.GUARD:
+                    CommandList.Defence(text,ref actor.isGuard,actor.name);
+                    yield return TextTimer(1.0f);
+                    break;
+
+                case ActionList.ACTIONTYPE.MAGICSKILL:
+
                     break;
             }
         }
-        return battleEnd;
+    }
+
+    /// <summary>
+    /// 戦闘の終了処理.
+    /// </summary>
+    /// <param name="target"></param>
+    /// <returns></returns>
+    IEnumerator BattleFinish(States target,States actor)
+    {
+        //攻撃目標死亡処理.
+        if (target.nowLifePoint <= 0)
+        {
+            if (target.isPlayer == true)
+            {
+                TextSystem.DeadPlayerText(text);
+                yield return TextTimer(1.0f);
+            }else if (target.isPlayer == false)
+            {
+                TextSystem.BeatEnemyText(text, target.name);
+                battleJoinedEnemyStates.Remove(target);
+                yield return TextTimer(1.0f);
+                TextSystem.WinText(text);
+                yield return TextTimer(1.0f);
+            }
+        }
+        else if (isPlayerTurn == false && playerStates.nowLifePoint > 0)
+        {
+            isPlayerTurn = true;
+            CommandList.ResetDefence(ref actor,ref target);
+            TextSystem.NextTurnText(text);
+        }else if (isPlayerTurn == true && target.nowLifePoint > 0)
+        {
+            isPlayerTurn = false;
+            BattlleDiceRollStart(target, actor);
+        }
     }
 
     /// <summary>

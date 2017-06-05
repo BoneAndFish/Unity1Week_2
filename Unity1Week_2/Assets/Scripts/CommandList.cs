@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using BattleProcess;
@@ -9,14 +8,12 @@ namespace BattleCommand
 {
     public class CommandList
     {
-        /// <summary>
-        /// 通常攻撃処理
-        /// </summary>
-        public static bool Atack(Text text, string actorName, string targetName,ref int targetLifePoint, int atackerAtack, int targetDefence, bool isGuard,bool isPlayer)
-        {
-            //if (MissText(text, isMiss, isPlayer)) return;
 
-            Defence(text,isGuard,isPlayer);
+        /// <summary>
+        /// 通常攻撃処理.
+        /// </summary>
+        public static int Atack(Text text, string actorName, string targetName,ref int targetLifePoint, int atackerAtack, int targetDefence, bool isGuard,bool isPlayer)
+        {
             TextSystem.AtackStartText(text, actorName);
             int damege = DamegeProcess.AtackDamegeProcess(atackerAtack, targetDefence);
             if (isGuard == true)
@@ -24,21 +21,17 @@ namespace BattleCommand
                 damege = DamegeProcess.DefenceProcess(damege, 0.5f);
             }
             DamegeProcess.LifePointDown(ref targetLifePoint, damege);
-            TextSystem.PlayerAtackText(text, targetName, damege);
-            return IsGameEnd(text, targetLifePoint, isPlayer, targetName);           
+            return damege;
         }
 
         /// <summary>
-        /// 特殊な攻撃処理
+        /// 特殊な攻撃処理.
         /// </summary>
         /// <param name="targetLifePoint"></param>
         /// <param name="atackerMagic"></param>
         /// <param name="targetMind"></param>
         public static bool SpecialAtack(Text text, string actorName, string skillName, string targetName,ref int targetLifePoint, int atackePoint, int targetPoint, bool isMagic, bool isGuard,bool isPlayer)
         {
-            //if (MissText(text, isMiss, isPlayer)) return;
-            
-            Defence(text, isGuard, isPlayer);
             int damege = 0;
             if (isMagic)
             {
@@ -59,14 +52,23 @@ namespace BattleCommand
         }
 
         /// <summary>
-        /// 防御処理
+        /// 防御処理.
         /// </summary>
-        static void Defence(Text text,bool isGuard,bool isPlayer)
+        public static void Defence(Text text,ref bool isGuard,string actorName)
         {
-            if (isGuard)
-            {
-                TextSystem.DefenceText(text,isPlayer);
-            }
+            isGuard = true;
+            TextSystem.DefenceText(text,actorName);
+        }
+
+        /// <summary>
+        /// 防御リセット処理.
+        /// </summary>
+        /// <param name="actor"></param>
+        /// <param name="target"></param>
+        public static void ResetDefence(ref States actor,ref States target)
+        {
+            actor.isGuard = false;
+            target.isGuard = false;
         }
 
         /// <summary>
@@ -113,6 +115,10 @@ namespace BattleCommand
             TextSystem.WinText(text);
         }
 
+        /// <summary>
+        /// 次のターン開始処理.
+        /// </summary>
+        /// <param name="text"></param>
         public static void NextTurn(Text text)
         {
             TextSystem.NextTurnText(text);

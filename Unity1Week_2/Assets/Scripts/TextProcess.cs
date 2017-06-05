@@ -23,17 +23,9 @@ namespace TextProcess
         /// </summary>
         /// <param name="text"></param>
         /// <param name="isPlayer"></param>
-        public static void DefenceText(Text text,bool isPlayer)
+        public static void DefenceText(Text text,string actorName)
         {
-            string textData;
-            if (isPlayer)
-            {
-                textData = "あなたたちは まもり を かためた !";
-            }else
-            {
-                textData = "まもの は まもり を かためた !";
-            }
-            text.text = textData;
+            text.text = actorName + " は " + "まもりを かためた !!";
         }
 
         /// <summary>

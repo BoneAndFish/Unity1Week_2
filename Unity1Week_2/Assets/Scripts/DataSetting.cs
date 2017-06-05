@@ -6,6 +6,7 @@ public class DataSetting : MonoBehaviour {
 
     public string enemyDataPath;
     public string playerDataPath;
+    public string skillDataPath;
     private string dataPath;
     //public string[] enemyTextData;
     public string text;
@@ -46,11 +47,17 @@ public class DataSetting : MonoBehaviour {
 
     public States[] enemyStates;
     public States[] playerStates;
+    public SkillSet[] skillDatas;
+
+    private int diceNumber;
 
 	// Use this for initialization
 	void Start () {     
     }
 
+    /// <summary>
+    /// ステータスの初期化.
+    /// </summary>
     public void IniDatas()
     {
         SetEnemyDatas();
@@ -60,10 +67,13 @@ public class DataSetting : MonoBehaviour {
         Invoke("TestDiceInstance", 1f);
     }
 	
+    /// <summary>
+    /// テスト用.
+    /// </summary>
     public void TestDiceInstance()
     {
-        DiceCreateInstance("Gobrin");
-        PlayerDiceCreateInstance("Dicelot");
+        DiceCreateInstance("Gobrin",0);
+        PlayerDiceCreateInstance("Dicelot",0);
     }
 
     /// <summary>
@@ -83,13 +93,22 @@ public class DataSetting : MonoBehaviour {
     {
         LoadTextData(playerDataPath,ref playerDatas);
         StatesSet(ref playerStates, ref playerDatas);
+        playerStates[0].isPlayer = true;
+    }
+
+    /// <summary>
+    /// スキルデータのセッティング.
+    /// </summary>
+    public void SkillDataSetting()
+    {
+        LoadTextData(skillDataPath,ref skillDatas);
     }
 
     /// <summary>
     /// バトルダイスの生成.
     /// </summary>
     /// <param name="charaName"></param>
-    public void DiceCreateInstance(string gameDataName)
+    public void DiceCreateInstance(string gameDataName,int diceNumber)
     {
         int number = 0;
         foreach (CharactorData states in enemyDatas)
@@ -100,14 +119,15 @@ public class DataSetting : MonoBehaviour {
             }
         }
         enemyStates[number].DiceSurfaceSetting(enemyDicePrefab);
-        Instantiate(enemyDicePrefab,transform.position,transform.rotation);
+        GameObject obj =  GameObject.Instantiate(enemyDicePrefab, transform.position, transform.rotation)as GameObject;
+        enemyStates[number].diceRoll.Add(obj.GetComponent<DiceRoll>());
     }
 
     /// <summary>
     /// プレイヤーのダイスの生成.
     /// </summary>
     /// <param name="playerNum"></param>
-    public void PlayerDiceCreateInstance(string diceName)
+    public void PlayerDiceCreateInstance(string diceName,int diceNumber)
     {
         int number = 0;
         foreach (CharactorData states in playerDatas)
@@ -118,7 +138,8 @@ public class DataSetting : MonoBehaviour {
             }
         }
         playerStates[number].DiceSurfaceSetting(playerDicePrefab);
-        Instantiate(playerDicePrefab, transform.position, transform.rotation);
+        GameObject obj = GameObject.Instantiate(playerDicePrefab, transform.position, transform.rotation) as GameObject;
+        playerStates[number].diceRoll.Add(obj.GetComponent<DiceRoll>());
     }
 
     /// <summary>
@@ -139,7 +160,7 @@ public class DataSetting : MonoBehaviour {
     }
 
     /// <summary>
-    /// テキストデータのロード.
+    /// キャラ用のテキストデータのロード.
     /// </summary>
     void LoadTextData(string dataPath,ref CharactorData[] datas)
     {
@@ -148,7 +169,7 @@ public class DataSetting : MonoBehaviour {
         text = dataText;
         System.StringSplitOptions option = System.StringSplitOptions.RemoveEmptyEntries;
         string[] lines = dataText.Split(new string[] {"\r","\n" },option);
-        line = lines;
+        //line = lines;
         string[] lineWidth = lines[0].Split(new string[] { ","},option);
         int dataWidth = lineWidth.Length;
         int dataLength = lines.Length;
@@ -163,7 +184,31 @@ public class DataSetting : MonoBehaviour {
     }
 
     /// <summary>
-    /// 敵のデータを数値にセット.
+    /// キャラ用のテキストデータのロード.
+    /// </summary>
+    void LoadTextData(string dataPath, ref SkillSet[] datas)
+    {
+        TextAsset textAsset = Resources.Load(dataPath) as TextAsset;
+        string dataText = textAsset.text;
+        text = dataText;
+        System.StringSplitOptions option = System.StringSplitOptions.RemoveEmptyEntries;
+        string[] lines = dataText.Split(new string[] { "\r", "\n" }, option);
+        //line = lines;
+        string[] lineWidth = lines[0].Split(new string[] { "," }, option);
+        int dataWidth = lineWidth.Length;
+        int dataLength = lines.Length;
+        datas = new SkillSet[dataLength - 1];
+        int dataCount = 0;
+
+        for (int lengthNum = 1; lengthNum < dataLength; lengthNum++)
+        {
+            DataSplitAndInsert(dataCount, lines[lengthNum], option, ref datas);
+            dataCount++;
+        }
+    }
+
+    /// <summary>
+    /// キャラクターデータを数値にセット.
     /// </summary>
     void DataSplitAndInsert(int dataCount,string dataLine,System.StringSplitOptions option,ref CharactorData[] charaDatas)
     {
@@ -193,5 +238,20 @@ public class DataSetting : MonoBehaviour {
         charaDatas[dataCount].dropItemName = datas[count++];
         charaDatas[dataCount].rareDropName = datas[count];
     }
+
+    /// <summary>
+    /// スキルデータの再セット.
+    /// </summary>
+    /// <param name="dataCount"></param>
+    /// <param name="dataLine"></param>
+    /// <param name="option"></param>
+    /// <param name="skillDatas"></param>
+    void DataSplitAndInsert(int dataCount, string dataLine, System.StringSplitOptions option, ref SkillSet[] skillDatas)
+    {
+        string[] datas = dataLine.Split(new string[] { "," }, option);
+        int count = 0;
+        skillDatas[dataCount] = new SkillSet(datas[count++], datas[count++], datas[count++], datas[count++], datas[count++], datas[count++], datas[count++]);
+    }
+
 
 }

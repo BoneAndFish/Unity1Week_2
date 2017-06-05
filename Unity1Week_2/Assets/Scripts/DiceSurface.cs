@@ -24,9 +24,10 @@ public class DiceSurface : MonoBehaviour {
         int getSurfaceNum = (7 - thisSurfaceNum);
         Debug.Log("今一番上にあるのはコレ:"+getSurfaceNum);
         diceRoll.diceSurfaceInfo = getSurfaceNum;
+        diceRoll.diceRolled = true;
     }
     /// <summary>
-    /// 離れたら0を返して何もとれてないことを伝える.
+    /// 地面から離れたら0を返して何もとれてないことを伝える.
     /// </summary>
     void OnTriggerExit()
     {
