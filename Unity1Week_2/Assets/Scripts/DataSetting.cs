@@ -47,7 +47,7 @@ public class DataSetting : MonoBehaviour {
 
     public States[] enemyStates;
     public States[] playerStates;
-    public SkillSet[] skillDatas;
+    public static SkillSet[] skillDatas;
 
     private int diceNumber;
 
@@ -60,6 +60,7 @@ public class DataSetting : MonoBehaviour {
     /// </summary>
     public void IniDatas()
     {
+        SkillDataSetting();
         SetEnemyDatas();
         SetPlayerDatas();
         SetEnemyDatas();
@@ -184,7 +185,7 @@ public class DataSetting : MonoBehaviour {
     }
 
     /// <summary>
-    /// キャラ用のテキストデータのロード.
+    /// スキルデータのロードとセーブ.
     /// </summary>
     void LoadTextData(string dataPath, ref SkillSet[] datas)
     {
@@ -240,7 +241,7 @@ public class DataSetting : MonoBehaviour {
     }
 
     /// <summary>
-    /// スキルデータの再セット.
+    /// スキルデータのセット.
     /// </summary>
     /// <param name="dataCount"></param>
     /// <param name="dataLine"></param>
@@ -253,5 +254,22 @@ public class DataSetting : MonoBehaviour {
         skillDatas[dataCount] = new SkillSet(datas[count++], datas[count++], datas[count++], datas[count++], datas[count++], datas[count++], datas[count++]);
     }
 
+    /// <summary>
+    /// スキルデータのセッティング.
+    /// </summary>
+    /// <param name="skillName"></param>
+    /// <returns></returns>
+    public static SkillSet SkillDataSetToStates(string skillName)
+    {
+        SkillSet skillData = null;
+        foreach (SkillSet skill in skillDatas)
+        {
+            if (skillName == skill.skillName)
+            {
+                return skillData = skill;
+            }
+        }
+        return skillData;
+    }
 
 }

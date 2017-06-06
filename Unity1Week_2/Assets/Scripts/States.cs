@@ -77,7 +77,6 @@ public class States {
         name = "";
         actions = new string[6];
         diceSurfaceAction = new ActionList.ACTIONTYPE[6];
-        //diceSurface = new DiceSurface[6];
     }
 
     /// <summary>
@@ -156,29 +155,33 @@ public class States {
                     diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.CRITICAL;
                     break;
             }
-            if (actions[diceFaceNum].Contains("魔法:"))
+            if (actions[diceFaceNum].Contains("魔法："))
             {
-                string outText = "魔法:";
+                string outText = "魔法：";
                 actions[diceFaceNum].Substring(outText.Length);
                 diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.MAGICSKILL;
+                skillSet.Add(DataSetting.SkillDataSetToStates(actions[diceFaceNum]));
             }
-            if (actions[diceFaceNum].Contains("特技:"))
+            if (actions[diceFaceNum].Contains("特技："))
             {
-                string outText = "特技:";
+                string outText = "特技：";
                 actions[diceFaceNum].Substring(outText.Length);
                 diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.ATACKSKILL;
+                skillSet.Add(DataSetting.SkillDataSetToStates(actions[diceFaceNum]));
             }
-            if (actions[diceFaceNum].Contains("強化"))
+            if (actions[diceFaceNum].Contains("強化："))
             {
-                string outText = "強化:";
+                string outText = "強化：";
                 actions[diceFaceNum].Substring(outText.Length);
                 diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.SUPPORTSKILL;
+                skillSet.Add(DataSetting.SkillDataSetToStates(actions[diceFaceNum]));
             }
-            if (actions[diceFaceNum].Contains("弱体"))
+            if (actions[diceFaceNum].Contains("弱体："))
             {
-                string outText = "弱体:";
+                string outText = "弱体：";
                 actions[diceFaceNum].Substring(outText.Length);
                 diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.SUPPORTSKILL;
+                skillSet.Add(DataSetting.SkillDataSetToStates(actions[diceFaceNum]));
             }
         }
     }
