@@ -114,7 +114,7 @@ namespace TextProcess
         /// <param name="text"></param>
         /// <param name="healValue"></param>
         /// <param name="isPlayer"></param>
-        public static void HealText(Text text,int healValue,bool isPlayer)
+        public static void HealText(Text text,int healValue,bool isPlayer,string actorName)
         {
             string textData;
             if (isPlayer)

@@ -25,12 +25,12 @@ namespace BattleCommand
         }
 
         /// <summary>
-        /// 特殊な攻撃処理.
+        /// 特殊な攻撃処理.ダメージ技.
         /// </summary>
         /// <param name="targetLifePoint"></param>
         /// <param name="atackerMagic"></param>
         /// <param name="targetMind"></param>
-        public static bool SpecialAtack(Text text, string actorName, string skillName, string targetName,ref int targetLifePoint, int atackePoint, int targetPoint, bool isMagic, bool isGuard,bool isPlayer)
+        public static int SpecialAtack(Text text, string actorName, string skillName, string targetName,ref int targetLifePoint, int atackePoint, int targetPoint, bool isMagic, bool isGuard,bool isPlayer)
         {
             int damege = 0;
             if (isMagic)
@@ -45,10 +45,8 @@ namespace BattleCommand
                     damege = DamegeProcess.DefenceProcess(damege, 0.5f);
                 }
             }
-            TextSystem.SkillActiveText(text, actorName, skillName, isMagic);//スキル発動.
             DamegeProcess.LifePointDown(ref targetLifePoint, damege);//ライフ減少.
-            TextSystem.PlayerAtackText(text, targetName, damege);//敵に攻撃.
-            return IsGameEnd(text,targetLifePoint,isPlayer, targetName);//どちらが死んだか.
+            return damege;
         }
 
         /// <summary>
@@ -77,9 +75,12 @@ namespace BattleCommand
         public static void Heal(Text text, string actorName, string targetName,ref int targetLifePoint,int targetMaxLife , int healPoint,bool isPlayer)
         {
             int healValue = DamegeProcess.HealProcess(healPoint);
-            TextSystem.HealText(text, healValue,isPlayer);
+            TextSystem.HealText(text, healValue,isPlayer,actorName);
             DamegeProcess.LifePointUp(ref targetLifePoint,targetMaxLife,healValue);
         }
+
+
+
 
         /// <summary>
         /// 死んだか死んでないか.

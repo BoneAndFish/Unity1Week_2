@@ -5,6 +5,9 @@ using System.Collections.Generic;
 [System.Serializable]
 public class States {
 
+    /// <summary>
+    /// 基礎ステ.
+    /// </summary>
     public int level;//レベル.
     public int maxLifePoint;//最大ＨＰ.
     public int nowLifePoint;//今のＨＰ.
@@ -43,7 +46,121 @@ public class States {
     public ActionList.ACTIONTYPE[] diceSurfaceAction;
     public List<DiceRoll> diceRoll = new List<DiceRoll>();
     public List<SkillSet> skillSet = new List<SkillSet>();
+    public BadStates badStates = new BadStates();
+
     //public DiceSurface[] diceSurface;
+    /// <summary>
+    /// 状態異常の設定.
+    /// </summary>
+    public class BadStates{
+        public int poizonTrun;
+        public int paralysisTurn;
+        public int stunTrun;
+        public int blindTrun;
+        public int sleepTrun;
+        public int silenceTrun;
+
+        /// <summary>
+        /// 初期化.
+        /// </summary>
+        public BadStates()
+        {
+            poizonTrun = 0;
+            paralysisTurn = 0;
+            stunTrun = 0;
+            blindTrun = 0;
+            sleepTrun = 0;
+            silenceTrun = 0;
+        }
+
+        /// <summary>
+        /// 状態異常ターンの設定.
+        /// </summary>
+        /// <param name="turn"></param>
+        /// <param name="effectName"></param>
+        public void SetbadStatesTrun(int turn,string effectName)
+        {
+            switch (effectName)
+            {
+                case "毒":
+                    poizonTrun = turn;
+                    break;
+                case "麻痺":
+                    paralysisTurn = turn;
+                    break;
+                case "スタン":
+                    stunTrun = turn;
+                    break;
+                case "暗闇":
+                    blindTrun = turn;
+                    break;
+                case "睡眠":
+                    sleepTrun = turn;
+                    break;
+                case "沈黙":
+                    silenceTrun = turn;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// ターン終了時に状態異常の持続カウントを減らす.
+        /// </summary>
+        public void TurnEndBadStatesCountDown()
+        {
+            BadStatesTurnCountMinus(ref poizonTrun);
+            BadStatesTurnCountMinus(ref paralysisTurn);
+            BadStatesTurnCountMinus(ref stunTrun);
+            BadStatesTurnCountMinus(ref blindTrun);
+            BadStatesTurnCountMinus(ref sleepTrun);
+            BadStatesTurnCountMinus(ref silenceTrun);
+        }
+
+        /// <summary>
+        /// 状態異常を即座に回復する.
+        /// </summary>
+        /// <param name="effectName"></param>
+        public void BadStatesClear(string effectName)
+        {
+            switch (effectName)
+            {
+                case "毒":
+                    poizonTrun = 0;
+                    break;
+                case "麻痺":
+                    paralysisTurn = 0;
+                    break;
+                case "スタン":
+                    stunTrun = 0;
+                    break;
+                case "暗闇":
+                    blindTrun = 0;
+                    break;
+                case "睡眠":
+                    sleepTrun = 0;
+                    break;
+                case "沈黙":
+                    silenceTrun = 0;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// カウント減少処理.
+        /// </summary>
+        /// <param name="badStatesTurn"></param>
+        void BadStatesTurnCountMinus(ref int badStatesTurn)
+        {
+            badStatesTurn = badStatesTurn > 0 ? badStatesTurn - 1 : 0;
+        }
+
+    }
+
+    /// <summary>
+    /// ステータスの増加処理.
+    /// </summary>
+    public class StatesUpDown{
+    }
 
     /// <summary>
     /// 初期化しないと怒られることに気付いた.
@@ -157,33 +274,34 @@ public class States {
             }
             if (actions[diceFaceNum].Contains("魔法："))
             {
-                string outText = "魔法：";
-                actions[diceFaceNum].Substring(outText.Length);
-                diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.MAGICSKILL;
-                skillSet.Add(DataSetting.SkillDataSetToStates(actions[diceFaceNum]));
+                SkillNameResetting("魔法：", diceFaceNum, ActionList.ACTIONTYPE.MAGICSKILL);
             }
             if (actions[diceFaceNum].Contains("特技："))
             {
-                string outText = "特技：";
-                actions[diceFaceNum].Substring(outText.Length);
-                diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.ATACKSKILL;
-                skillSet.Add(DataSetting.SkillDataSetToStates(actions[diceFaceNum]));
+                SkillNameResetting("特技：", diceFaceNum, ActionList.ACTIONTYPE.ATACKSKILL);
             }
             if (actions[diceFaceNum].Contains("強化："))
             {
-                string outText = "強化：";
-                actions[diceFaceNum].Substring(outText.Length);
-                diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.SUPPORTSKILL;
-                skillSet.Add(DataSetting.SkillDataSetToStates(actions[diceFaceNum]));
+                SkillNameResetting("強化：", diceFaceNum, ActionList.ACTIONTYPE.SUPPORTSKILL);
             }
             if (actions[diceFaceNum].Contains("弱体："))
             {
-                string outText = "弱体：";
-                actions[diceFaceNum].Substring(outText.Length);
-                diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.SUPPORTSKILL;
-                skillSet.Add(DataSetting.SkillDataSetToStates(actions[diceFaceNum]));
+                SkillNameResetting("弱体：",diceFaceNum, ActionList.ACTIONTYPE.SUPPORTSKILL);
             }
         }
+    }
+
+    /// <summary>
+    /// スキルデータの名前の再設定.
+    /// </summary>
+    /// <param name="outText"></param>
+    /// <param name="diceFaceNum"></param>
+    /// <param name="actionType"></param>
+    void SkillNameResetting(string outText,int diceFaceNum,ActionList.ACTIONTYPE actionType)
+    {
+        actions[diceFaceNum] = actions[diceFaceNum].Substring(outText.Length);
+        diceSurfaceAction[diceFaceNum] = actionType;
+        skillSet.Add(DataSetting.SkillDataSetToStates(actions[diceFaceNum]));
     }
 
     /// <summary>

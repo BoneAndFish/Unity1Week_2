@@ -134,9 +134,9 @@ public class BattleSystem : MonoBehaviour {
     {
         for (int diceNum=0;diceNum < actor.diceRoll.Count;diceNum++)
         {
-            int diceSurfaceNumber = actor.diceRoll[diceNum].diceSurfaceInfo;
+            int diceSurfaceNumber = actor.diceRoll[diceNum].diceSurfaceInfo-1;
             Debug.Log(diceSurfaceNumber);
-            ActionList.ACTIONTYPE actionType = actor.diceSurfaceAction[diceSurfaceNumber-1];
+            ActionList.ACTIONTYPE actionType = actor.diceSurfaceAction[diceSurfaceNumber];
             switch (actionType)
             {
                 //攻撃処理.
@@ -145,6 +145,36 @@ public class BattleSystem : MonoBehaviour {
                     yield return TextTimer(1.0f);
                     TextSystem.PlayerAtackText(text,target.name, damege);
                     yield return TextTimer(1.0f);
+                    break;
+                case ActionList.ACTIONTYPE.MAGICSKILL:
+                    string skillName = actor.actions[diceSurfaceNumber];
+                    SkillSet nowSelectSkill = null;
+                    foreach (SkillSet skillset in actor.skillSet)
+                    {
+                        if (skillset.skillName == skillName)
+                        {
+                            nowSelectSkill = skillset;
+                        }
+                    }
+                    if (nowSelectSkill.effectType == "Damege")
+                    {
+                        int skillDamege = CommandList.SpecialAtack(text, actor.name, skillName, target.name, ref target.nowLifePoint, actor.nowMagicPower+nowSelectSkill.effectValue, target.nowMindPower, true, target.isGuard, actor.isPlayer);
+                        yield return TextTimer(1.0f);
+                        TextSystem.SkillActiveText(text, actor.name, skillName, true);
+                        yield return TextTimer(nowSelectSkill.timerTime);
+                        TextSystem.PlayerAtackText(text, target.name, skillDamege);
+                        yield return TextTimer(1.0f);
+
+                    }else if (nowSelectSkill.effectType == "Heal")
+                    {
+
+                    }else if (nowSelectSkill.effectType == "Support")
+                    {
+
+                    }else if (nowSelectSkill.effectType == "CloudControll")
+                    {
+
+                    }
                     break;
                 //攻撃失敗処理.
                 case ActionList.ACTIONTYPE.MISS:
@@ -155,10 +185,6 @@ public class BattleSystem : MonoBehaviour {
                 case ActionList.ACTIONTYPE.GUARD:
                     CommandList.Defence(text,ref actor.isGuard,actor.name);
                     yield return TextTimer(1.0f);
-                    break;
-
-                case ActionList.ACTIONTYPE.MAGICSKILL:
-
                     break;
             }
         }

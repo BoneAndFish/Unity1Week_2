@@ -21,16 +21,21 @@ public class DiceSurface : MonoBehaviour {
     /// </summary>
     void OnTriggerEnter()
     {
-        int getSurfaceNum = (7 - thisSurfaceNum);
-        Debug.Log("今一番上にあるのはコレ:"+getSurfaceNum);
-        diceRoll.diceSurfaceInfo = getSurfaceNum;
-        diceRoll.diceRolled = true;
+        if (diceRoll.diceSurfaceInfo == 0)
+        {
+            int getSurfaceNum = (7 - thisSurfaceNum);
+            Debug.Log("今一番上にあるのはコレ:"+getSurfaceNum);
+            diceRoll.diceSurfaceInfo = getSurfaceNum;
+            diceRoll.diceRolled = true;
+        }
     }
     /// <summary>
     /// 地面から離れたら0を返して何もとれてないことを伝える.
     /// </summary>
     void OnTriggerExit()
     {
-        diceRoll.diceSurfaceInfo = 0;
+        if (diceRoll.diceRolled != true) {
+            diceRoll.diceSurfaceInfo = 0;
+        }
     }
 }
