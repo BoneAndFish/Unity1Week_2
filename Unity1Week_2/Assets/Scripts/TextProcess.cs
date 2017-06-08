@@ -150,6 +150,18 @@ namespace TextProcess
         }
 
         /// <summary>
+        /// 状態異常を受けた時のテキスト.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="actorName"></param>
+        /// <param name="targetName"></param>
+        /// <param name="badStatesName"></param>
+        public static void BadStatesText(Text text,string actorName,string targetName,string badStatesName)
+        {
+            text.text += "\n" + targetName + " は " + badStatesName + " を うけた !!";
+        }
+
+        /// <summary>
         /// ステータスが元に戻る.
         /// </summary>
         /// <param name="text"></param>

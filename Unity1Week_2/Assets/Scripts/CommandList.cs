@@ -72,15 +72,32 @@ namespace BattleCommand
         /// <summary>
         /// 回復処理.
         /// </summary>
-        public static void Heal(Text text, string actorName, string targetName,ref int targetLifePoint,int targetMaxLife , int healPoint,bool isPlayer)
+        public static int Heal(Text text, string actorName, string targetName,ref int targetLifePoint,int targetMaxLife , int healPoint,bool isPlayer)
         {
             int healValue = DamegeProcess.HealProcess(healPoint);
-            TextSystem.HealText(text, healValue,isPlayer,actorName);
             DamegeProcess.LifePointUp(ref targetLifePoint,targetMaxLife,healValue);
+            return healValue;
         }
 
+        /// <summary>
+        /// 状態異常を受けた処理.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="actorName"></param>
+        /// <param name="targetName"></param>
+        /// <param name="targetStatePoint"></param>
+        /// <param name="badStatesValue"></param>
+        public static void BadStates(Text text,string actorName,string targetName,ref int targetStatePoint,int badStatesValue,string badStatesName)
+        {
+            targetStatePoint = badStatesValue;
+            TextSystem.BadStatesText(text,actorName,targetName,badStatesName);
+        }
+        
 
-
+        public static void StatesControll(Text text,string actorName,string targetName,ref int targetStatesPoint,int controllPoint)
+        {
+            targetStatesPoint += controllPoint;
+        }
 
         /// <summary>
         /// 死んだか死んでないか.

@@ -160,6 +160,17 @@ public class States {
     /// ステータスの増加処理.
     /// </summary>
     public class StatesUpDown{
+        public int atackUpTurn;
+        public int defenceUpTurn;
+        public int speedUpTurn;
+
+        public StatesUpDown()
+        {
+            atackUpTurn = 0;
+            defenceUpTurn = 0;
+            speedUpTurn = 0;
+        }
+
     }
 
     /// <summary>

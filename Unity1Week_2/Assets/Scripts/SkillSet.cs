@@ -10,7 +10,7 @@ public class SkillSet{
     public string effectType;
     public int effectValue;
     public float timerTime;
-    public int resource;
+    public string badStates;
 
     /// <summary>
     /// 使用するスキル情報をセットする.
@@ -22,7 +22,7 @@ public class SkillSet{
     /// <param name="_effectValue"></param>
     /// <param name="_timerTime"></param>
     /// <param name="_resource"></param>
-    public SkillSet(string _skillName,string _skillNumber,string _skillType,string _effectType,string _effectValue,string _timerTime,string _resource)
+    public SkillSet(string _skillName,string _skillNumber,string _skillType,string _effectType,string _effectValue,string _timerTime,string _badStates)
     {
         skillName = _skillName;
         skillNumber = int.Parse(_skillNumber);
@@ -30,7 +30,7 @@ public class SkillSet{
         effectType = _effectType;
         effectValue = int.Parse(_effectValue);
         timerTime = float.Parse(_timerTime);
-        resource = int.Parse(_resource);
+        badStates = _badStates;
     }
 	
 }
