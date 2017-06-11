@@ -66,7 +66,7 @@ public class BattleSystem : MonoBehaviour {
     }
 
     /// <summary>
-    /// 攻撃準備完了かどうか.
+    /// 攻撃準備完了かどうか.サイコロを全て振る.
     /// </summary>
     /// <param name="actor"></param>
     /// <returns></returns>
@@ -141,58 +141,77 @@ public class BattleSystem : MonoBehaviour {
             {
                 //攻撃処理.
                 case ActionList.ACTIONTYPE.ATACK:
-                    int damege = CommandList.Atack(text, actor.name, target.name,ref target.nowLifePoint, actor.nowAtackPower, target.nowDefencePower, target.isGuard, actor.isPlayer);
-                    yield return TextTimer(1.0f);
-                    TextSystem.PlayerAtackText(text,target.name, damege);
-                    yield return TextTimer(1.0f);
+
+                    if (BadStatesCommandFail("暗闇", actor)) {
+                        TextSystem.AtackMiss(text, actor.name);
+                        yield return TextTimer(1.0f);
+                    }
+                    else
+                    {
+                        int damege = CommandList.Atack(text, actor.name, target.name, ref target.nowLifePoint, actor.nowAtackPower, target.nowDefencePower, target.isGuard, actor.isPlayer);
+                        yield return TextTimer(1.0f);
+                        TextSystem.PlayerAtackText(text, target.name, damege);
+                        yield return TextTimer(1.0f);
+                    }
                     break;
                 case ActionList.ACTIONTYPE.MAGICSKILL:
-                    string skillName = actor.actions[diceSurfaceNumber];
-                    SkillSet selectSkill = GetSkillData(diceSurfaceNumber,actor,skillName);
-                    TextSystem.SkillActiveText(text, actor.name, skillName, true);
-                    if (selectSkill.effectType == "Damege")
-                    {
-                        int skillDamege = CommandList.SpecialAtack(text, actor.name, skillName, target.name, ref target.nowLifePoint, actor.nowMagicPower+selectSkill.effectValue, target.nowMindPower, true, target.isGuard, actor.isPlayer);
-                        yield return TextTimer(selectSkill.timerTime);
-                        TextSystem.PlayerAtackText(text, target.name, skillDamege);
-                        yield return TextTimer(1.0f);
 
-                    }else if (selectSkill.effectType == "Heal")
+                    if (BadStatesCommandFail("沈黙", actor))
                     {
-                        int healValue = CommandList.Heal(text,actor.name,actor.name,ref actor.nowLifePoint,actor.maxLifePoint, selectSkill.effectValue,actor.isPlayer);
-                        yield return TextTimer(selectSkill.timerTime);
-                        TextSystem.HealText(text,healValue,actor.isPlayer,actor.name);
-                        yield return TextTimer(1.0f);
-                    }
-                    else if (selectSkill.effectType == "Support")
+                        TextSystem.MagicSkillMiss(text,actor.name);
+                    }else
                     {
-
-                    }else if (selectSkill.effectType == "BadStates")
-                    {
-                        switch (selectSkill.badStates)
+                        string skillName = actor.actions[diceSurfaceNumber];
+                        SkillSet selectSkill = GetSkillData(diceSurfaceNumber, actor, skillName);
+                        TextSystem.SkillActiveText(text, actor.name, skillName, true);
+                        if (selectSkill.effectType == "Damege")
                         {
-                            case "毒":
-                                CommandList.StatesControll(text, actor.name, target.name,ref target.badStates.poizonTrun , selectSkill.effectValue,selectSkill.badStates);
-                                break;
-                            case "麻痺":
-                                CommandList.StatesControll(text, actor.name, target.name, ref target.badStates.poizonTrun, selectSkill.effectValue, selectSkill.badStates);
-                                break;
-                            case "スタン":
-                                CommandList.StatesControll(text, actor.name, target.name, ref target.badStates.poizonTrun, selectSkill.effectValue, selectSkill.badStates);
-                                break;
-                            case "暗闇":
-                                CommandList.StatesControll(text, actor.name, target.name, ref target.badStates.poizonTrun, selectSkill.effectValue, selectSkill.badStates);
-                                break;
-                            case "睡眠":
-                                CommandList.StatesControll(text, actor.name, target.name, ref target.badStates.poizonTrun, selectSkill.effectValue, selectSkill.badStates);
-                                break;
-                            case "沈黙":
-                                CommandList.StatesControll(text, actor.name, target.name, ref target.badStates.poizonTrun, selectSkill.effectValue, selectSkill.badStates);
-                                break;
-                        }
-                        yield return TextTimer(selectSkill.timerTime);
+                            int skillDamege = CommandList.SpecialAtack(text, actor.name, skillName, target.name, ref target.nowLifePoint, actor.nowMagicPower + selectSkill.effectValue, target.nowMindPower, true, target.isGuard, actor.isPlayer);
+                            yield return TextTimer(selectSkill.timerTime);
+                            TextSystem.PlayerAtackText(text, target.name, skillDamege);
+                            yield return TextTimer(1.0f);
 
+                        }
+                        else if (selectSkill.effectType == "Heal")
+                        {
+                            int healValue = CommandList.Heal(text, actor.name, actor.name, ref actor.nowLifePoint, actor.maxLifePoint, selectSkill.effectValue, actor.isPlayer);
+                            yield return TextTimer(selectSkill.timerTime);
+                            TextSystem.HealText(text, healValue, actor.isPlayer, actor.name);
+                            yield return TextTimer(1.0f);
+                        }
+                        else if (selectSkill.effectType == "Support")
+                        {
+
+                        }
+                        else if (selectSkill.effectType == "BadStates")
+                        {
+                            switch (selectSkill.badStates)
+                            {
+                                case "毒":
+                                    CommandList.BadStates(text, actor.name, target.name, ref target.badStates.poizonTrun, selectSkill.effectValue, selectSkill.badStates);
+                                    break;
+                                case "麻痺":
+                                    CommandList.BadStates(text, actor.name, target.name, ref target.badStates.poizonTrun, selectSkill.effectValue, selectSkill.badStates);
+                                    break;
+                                case "スタン":
+                                    CommandList.BadStates(text, actor.name, target.name, ref target.badStates.poizonTrun, selectSkill.effectValue, selectSkill.badStates);
+                                    break;
+                                case "暗闇":
+                                    CommandList.BadStates(text, actor.name, target.name, ref target.badStates.poizonTrun, selectSkill.effectValue, selectSkill.badStates);
+                                    break;
+                                case "睡眠":
+                                    CommandList.BadStates(text, actor.name, target.name, ref target.badStates.poizonTrun, selectSkill.effectValue, selectSkill.badStates);
+                                    break;
+                                case "沈黙":
+                                    CommandList.BadStates(text, actor.name, target.name, ref target.badStates.poizonTrun, selectSkill.effectValue, selectSkill.badStates);
+                                    break;
+                            }
+                            yield return TextTimer(selectSkill.timerTime);
+
+                        }
                     }
+
+                    
                     break;
                 //攻撃失敗処理.
                 case ActionList.ACTIONTYPE.MISS:
@@ -220,6 +239,13 @@ public class BattleSystem : MonoBehaviour {
         }
         return nowSelectSkill;
     }
+
+    bool BadStatesCommandFail(string badStatesName,States actor)
+    {
+        bool isSuccess = actor.badStates.BadStatesEffeted(badStatesName);        
+        return isSuccess;
+    }
+
 
     /// <summary>
     /// 戦闘の終了処理.

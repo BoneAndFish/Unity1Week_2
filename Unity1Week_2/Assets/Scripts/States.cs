@@ -146,6 +146,38 @@ public class States {
         }
 
         /// <summary>
+        /// 特定の状態異常を受けているかどうかの判定.
+        /// </summary>
+        /// <param name="effectName"></param>
+        /// <returns></returns>
+        public bool BadStatesEffeted(string effectName)
+        {
+            bool isEffected = false;
+            switch (effectName)
+            {
+                case "毒":
+                    isEffected =  poizonTrun > 0 ? isEffected = true : isEffected = false;
+                    break;
+                case "麻痺":
+                    isEffected = paralysisTurn > 0 ? isEffected = true : isEffected = false;
+                    break;
+                case "スタン":
+                    isEffected = stunTrun > 0 ? isEffected = true : isEffected = false;
+                    break;
+                case "暗闇":
+                    isEffected = blindTrun > 0 ? isEffected = true : isEffected = false;
+                    break;
+                case "睡眠":
+                    isEffected = sleepTrun > 0 ? isEffected = true : isEffected = false;
+                    break;
+                case "沈黙":
+                    isEffected = silenceTrun > 0 ? isEffected = true : isEffected = false;
+                    break;
+            }
+            return isEffected;
+        }
+
+        /// <summary>
         /// カウント減少処理.
         /// </summary>
         /// <param name="badStatesTurn"></param>

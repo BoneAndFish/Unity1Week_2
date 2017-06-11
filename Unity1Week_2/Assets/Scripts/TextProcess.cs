@@ -150,6 +150,28 @@ namespace TextProcess
         }
 
         /// <summary>
+        /// 通常攻撃失敗時の表示.暗闇のとき.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="actorName"></param>
+        public static void AtackMiss(Text text,string actorName)
+        {
+            text.text = actorName + " は " + " しかいを つぶされて " + "\n" +
+                        "こうげき が あたらなかった !!";
+        }
+
+        /// <summary>
+        /// 魔法攻撃失敗時の表示.沈黙.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="actorName"></param>
+        public static void MagicSkillMiss(Text text,string actorName)
+        {
+            text.text = actorName + " は " + " ことば を はっすることが できず " + "\n" +
+                        " じゅもん を となえること が できなかった !!";
+        }
+
+        /// <summary>
         /// 状態異常を受けた時のテキスト.
         /// </summary>
         /// <param name="text"></param>
