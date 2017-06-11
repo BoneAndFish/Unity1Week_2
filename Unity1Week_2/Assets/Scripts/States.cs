@@ -42,13 +42,32 @@ public class States {
 
     public string name;
     public string dataName;
-    public string[] actions;
-    public ActionList.ACTIONTYPE[] diceSurfaceAction;
+    public int actionCount;//行動回数.
+    public List<DiceActions> diceActions = new List<DiceActions>();
     public List<DiceRoll> diceRoll = new List<DiceRoll>();
     public List<SkillSet> skillSet = new List<SkillSet>();
     public BadStates badStates = new BadStates();
 
-    //public DiceSurface[] diceSurface;
+    /// <summary>
+    /// サイコロのアクション設定.キャラによってサイコロの数が違う.
+    /// </summary>
+    [System.Serializable]
+    public class DiceActions
+    {
+        public ActionList.ACTIONTYPE[] diceSurfaceAction = new ActionList.ACTIONTYPE[6];
+        public string diceName = "None";
+        public string[] actions = new string[6];
+        public DiceActions(string actionName_1, string actionName_2, string actionName_3, string actionName_4, string actionName_5, string actionName_6)
+        {
+            actions[0] = actionName_1;
+            actions[1] = actionName_2;
+            actions[2] = actionName_3;
+            actions[3] = actionName_4;
+            actions[4] = actionName_5;
+            actions[5] = actionName_6;
+        }
+    }
+
     /// <summary>
     /// 状態異常の設定.
     /// </summary>
@@ -235,8 +254,7 @@ public class States {
         levelUpMagic = 0;
         levelUpMind = 0;
         name = "";
-        actions = new string[6];
-        diceSurfaceAction = new ActionList.ACTIONTYPE[6];
+        //actions = new string[6];
     }
 
     /// <summary>
@@ -273,63 +291,80 @@ public class States {
     /// <summary>
     /// 行動ダイスの設定.
     /// </summary>
+    void IniDiceSurfaces(int diceNum, string action1, string action2, string action3, string action4, string action5, string action6)
+    {
+        diceActions[diceNum].actions[0] = action1;
+        diceActions[diceNum].actions[1] = action2;
+        diceActions[diceNum].actions[2] = action3;
+        diceActions[diceNum].actions[3] = action4;
+        diceActions[diceNum].actions[4] = action5;
+        diceActions[diceNum].actions[5] = action6;
+    }
+    /*
+    /// <summary>
+    /// サイコロの情報をセットする.
+    /// </summary>
+    /// <param name="diceNum"></param>
     /// <param name="action1"></param>
     /// <param name="action2"></param>
     /// <param name="action3"></param>
     /// <param name="action4"></param>
     /// <param name="action5"></param>
     /// <param name="action6"></param>
-    public void IniActionDatas(string action1, string action2, string action3, string action4, string action5, string action6)
+    public void IniActionDatas(string diceDataName)
     {
-        actions[0] = action1;
-        actions[1] = action2;
-        actions[2] = action3;
-        actions[3] = action4;
-        actions[4] = action5;
-        actions[5] = action6;
-        DiceSurfaceDataSet();
+        int diceNum = 0;
+        foreach (DiceActions diceAction in DataSetting.diceActions)
+        {
+            if (diceAction.diceName == diceDataName)
+            {
+                break;
+            }
+            diceNum++;
+        }        
+        DiceSurfaceDataSet(diceActions[diceNum]);
     }
-
+    /*
     /// <summary>
     /// アクションサイコロの行動設定.
     /// </summary>
-    public void DiceSurfaceDataSet()
+    public void DiceSurfaceDataSet(DiceActions diceAction)
     {
         for (int diceFaceNum = 0;diceFaceNum < 6;diceFaceNum++)
         {
-            switch (actions[diceFaceNum])
+            switch (diceAction.actions[diceFaceNum])
             {
                 case "戦う":
-                    diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.ATACK;
+                    diceAction.diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.ATACK;
                     break;
                 case "防御":
-                    diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.GUARD;
+                    diceAction.diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.GUARD;
                     break;
                 case "回避":
-                    diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.DODGE;
+                    diceAction.diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.DODGE;
                     break;
                 case "ミス":
-                    diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.MISS;
+                    diceAction.diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.MISS;
                     break;
                 case "必殺の一撃":
-                    diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.CRITICAL;
+                    diceAction.diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.CRITICAL;
                     break;
             }
-            if (actions[diceFaceNum].Contains("魔法："))
+            if (diceAction.actions[diceFaceNum].Contains("魔法："))
             {
-                SkillNameResetting("魔法：", diceFaceNum, ActionList.ACTIONTYPE.MAGICSKILL);
+                SkillNameResetting("魔法：", diceFaceNum, ActionList.ACTIONTYPE.MAGICSKILL, diceAction);
             }
-            if (actions[diceFaceNum].Contains("特技："))
+            if (diceAction.actions[diceFaceNum].Contains("特技："))
             {
-                SkillNameResetting("特技：", diceFaceNum, ActionList.ACTIONTYPE.ATACKSKILL);
+                SkillNameResetting("特技：", diceFaceNum, ActionList.ACTIONTYPE.ATACKSKILL, diceAction);
             }
-            if (actions[diceFaceNum].Contains("強化："))
+            if (diceAction.actions[diceFaceNum].Contains("強化："))
             {
-                SkillNameResetting("強化：", diceFaceNum, ActionList.ACTIONTYPE.SUPPORTSKILL);
+                SkillNameResetting("強化：", diceFaceNum, ActionList.ACTIONTYPE.SUPPORTSKILL, diceAction);
             }
-            if (actions[diceFaceNum].Contains("弱体："))
+            if (diceAction.actions[diceFaceNum].Contains("弱体："))
             {
-                SkillNameResetting("弱体：",diceFaceNum, ActionList.ACTIONTYPE.SUPPORTSKILL);
+                SkillNameResetting("弱体：",diceFaceNum, ActionList.ACTIONTYPE.SUPPORTSKILL, diceAction);
             }
         }
     }
@@ -340,12 +375,13 @@ public class States {
     /// <param name="outText"></param>
     /// <param name="diceFaceNum"></param>
     /// <param name="actionType"></param>
-    void SkillNameResetting(string outText,int diceFaceNum,ActionList.ACTIONTYPE actionType)
+    void SkillNameResetting(string outText,int diceFaceNum,ActionList.ACTIONTYPE actionType,DiceActions diceAction)
     {
-        actions[diceFaceNum] = actions[diceFaceNum].Substring(outText.Length);
-        diceSurfaceAction[diceFaceNum] = actionType;
-        skillSet.Add(DataSetting.SkillDataSetToStates(actions[diceFaceNum]));
+        diceAction.actions[diceFaceNum] = diceAction.actions[diceFaceNum].Substring(outText.Length);
+        diceAction.diceSurfaceAction[diceFaceNum] = actionType;
+        skillSet.Add(DataSetting.SkillDataSetToStates(diceAction.actions[diceFaceNum]));
     }
+    */
 
     /// <summary>
     /// ダイスの表面とサイコロの情報の紐づけ設定.召喚するたびに呼び出して初期化する.
@@ -354,8 +390,10 @@ public class States {
     public void DiceSurfaceSetting(GameObject dicePrefab)
     {
         DiceSetting diceSetting = dicePrefab.GetComponent<DiceSetting>();
-        diceSetting.IniDiceSet(diceSurfaceAction);
-        //diceRoll.Add(dicePrefab.GetComponent<DiceRoll>());//ここを変えないとサイコロ回ってくれない.
+        for (int diceNum = 0;diceNum < actionCount;diceNum++)
+        {
+            diceSetting.IniDiceSet(diceActions[diceNum].diceSurfaceAction);
+        }
     }
 
     /// <summary>

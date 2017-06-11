@@ -9,6 +9,7 @@ public class DiceRoll : MonoBehaviour {
     public float maxForce;
 
     public int diceSurfaceInfo = 1;
+    public string diceName;//何ダイスですか.
     public bool diceRolled;
 
 	// Use this for initialization

@@ -12,6 +12,9 @@ public class BattleSystem : MonoBehaviour {
     public List<States> battleJoinedEnemyStates = new List<States>();//登場させる敵のデータ.
     public List<States> battleEnemyStates = new List<States>();//実際に戦闘する敵のデータ.
 
+    public List<DiceRoll> actorBattleDiceRoll = new List<DiceRoll>();
+    public List<States.DiceActions> actorBattleDiceAction = new List<States.DiceActions>();
+
     public DataSetting dataSetting;
 
     public Text text;
@@ -23,7 +26,7 @@ public class BattleSystem : MonoBehaviour {
         dataSetting.IniDatas();
         GetSummonEnemysData();
         PlayerStatesSet();
-        SpownEnemy("Gobrin");
+        //SpownEnemy("Gobrin");
     }
 
     /// <summary>
@@ -32,7 +35,7 @@ public class BattleSystem : MonoBehaviour {
     public void TestBattleStart()
     {
         isPlayerTurn = true;
-        BattlleDiceRollStart(playerStates,battleEnemyStates[0]);        
+        BattlleDiceRollStart(playerStates,battleEnemyStates[0]);
     }
 
     /// <summary>
@@ -41,11 +44,41 @@ public class BattleSystem : MonoBehaviour {
     /// <param name="actor"></param>
     public void BattlleDiceRollStart(States actor,States target)
     {
-        for (int diceNum = 0;diceNum < actor.diceRoll.Count;diceNum++)
+        for (int diceNum = 0;diceNum < actorBattleDiceRoll.Count;diceNum++)
         {
-            actor.diceRoll[diceNum].RollDice();
+            actorBattleDiceRoll[diceNum].RollDice();
         }
-        StartCoroutine(DiceValueSet(actor,target));
+        StartCoroutine(DiceValueSet(actor,target));//サイコロの値をセットする.
+    }
+
+    /// <summary>
+    /// 行動者と選択したサイコロの番号でダイスを選ぶ.
+    /// </summary>
+    /// <param name="diceNum"></param>
+    /// <param name="actor"></param>
+    public void SetCommand(int diceNum,States actor)
+    {
+        int selectNum = 0;
+        for (int num = 0;num < actor.actionCount;num++)
+        {
+            if (num == diceNum)
+            {
+                selectNum = diceNum;
+            }
+        }
+        actorBattleDiceRoll.Add(actor.diceRoll[selectNum]);
+        actorBattleDiceAction.Add(actor.diceActions[selectNum]);
+    }
+
+    /// <summary>
+    /// 行動のキャンセル処理.
+    /// </summary>
+    /// <param name="selectDiceRoll"></param>
+    /// <param name="diceAction"></param>
+    public void RemoveCommand(DiceRoll selectDiceRoll,States.DiceActions diceAction)
+    {
+        actorBattleDiceRoll.Remove(selectDiceRoll);
+        actorBattleDiceAction.Remove(diceAction);
     }
 
     /// <summary>
@@ -126,17 +159,18 @@ public class BattleSystem : MonoBehaviour {
         }
     }
 
-
+    
     /// <summary>
     /// 行動決定からのターン処理.
     /// </summary>
     IEnumerator BattleProcess(States actor,States target)
     {
+
         for (int diceNum=0;diceNum < actor.diceRoll.Count;diceNum++)
         {
-            int diceSurfaceNumber = actor.diceRoll[diceNum].diceSurfaceInfo-1;
+            int diceSurfaceNumber = actorBattleDiceRoll[diceNum].diceSurfaceInfo-1;
             Debug.Log(diceSurfaceNumber);
-            ActionList.ACTIONTYPE actionType = actor.diceSurfaceAction[diceSurfaceNumber];
+            ActionList.ACTIONTYPE actionType = actorBattleDiceAction[diceNum].diceSurfaceAction[diceSurfaceNumber];
             switch (actionType)
             {
                 //攻撃処理.
@@ -161,7 +195,7 @@ public class BattleSystem : MonoBehaviour {
                         TextSystem.MagicSkillMiss(text,actor.name);
                     }else
                     {
-                        string skillName = actor.actions[diceSurfaceNumber];
+                        string skillName = actorBattleDiceAction[diceSurfaceNumber].actions[diceNum];
                         SkillSet selectSkill = GetSkillData(diceSurfaceNumber, actor, skillName);
                         TextSystem.SkillActiveText(text, actor.name, skillName, true);
                         if (selectSkill.effectType == "Damege")
