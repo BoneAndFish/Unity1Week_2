@@ -8,6 +8,11 @@ public class States {
     /// <summary>
     /// 基礎ステ.
     /// </summary>
+    public string name;
+    public string dataName;
+    public int dataNumber;//データ番号
+    public int nestNumber;//ダンジョンの深さ出現
+    public string type;//このキャラクターのタイプ.ボスかどうかとか.
     public int level;//レベル.
     public int maxLifePoint;//最大ＨＰ.
     public int nowLifePoint;//今のＨＰ.
@@ -40,9 +45,12 @@ public class States {
     public int levelUpMagic;
     public int levelUpMind;
 
-    public string name;
-    public string dataName;
+    public string normalDropItemName;
+    public string rareDropItemName;
+
     public int actionCount;//行動回数.
+    public string actionDicePatternName;//行動ダイスの種類.
+
     public List<DiceActions> diceActions = new List<DiceActions>();
     public List<DiceRoll> diceRoll = new List<DiceRoll>();
     public List<SkillSet> skillSet = new List<SkillSet>();
@@ -225,50 +233,20 @@ public class States {
     }
 
     /// <summary>
-    /// 初期化しないと怒られることに気付いた.
+    /// 基本情報の初期化
     /// </summary>
-    public States()
+    public States(string _dataNum, string _nestNum, string loadDataName, string charaType, string charaName, string life, string atack, string defence, string magic, string mind)
     {
-        level = 0;
-        maxLifePoint = 0;
-        nowLifePoint = 0;
-        nowLifePoint = 0;
-        atackPower = 0;
-        nowAtackPower = 0;
-        defencePower = 0;
-        nowDefencePower = 0;
-        magicPower = 0;
-        nowMagicPower=0;
-        mindPower = 0;
-        nowMindPower = 0;
-        isPlayer = false;
-        isGuard = false;
-        iniLife = 0;
-        iniAtack = 0;
-        iniDefence = 0;
-        iniMagic = 0;
-        iniMind = 0;
-        levelUpLife = 0;
-        levelUpAtack = 0;
-        levelUpDefence = 0;
-        levelUpMagic = 0;
-        levelUpMind = 0;
-        name = "";
-        //actions = new string[6];
-    }
-
-    /// <summary>
-    /// ステータスの初期化.
-    /// </summary>
-    public void IniStates(string charaName,string loadDataName,int life,int atack,int defence,int magic,int mind)
-    {
-        name = charaName;
+        dataNumber = int.Parse(_dataNum);
+        nestNumber = int.Parse(_nestNum);
         dataName = loadDataName;
-        iniLife = life;
-        iniAtack = atack;
-        iniDefence = defence;
-        iniMagic = magic;
-        iniMind = mind;
+        type = charaType;
+        name = charaName;
+        iniLife = int.Parse(life);
+        iniAtack = int.Parse(atack);
+        iniDefence = int.Parse(defence);
+        iniMagic = int.Parse(magic);
+        iniMind = int.Parse(mind);
     }
 
     /// <summary>
@@ -279,15 +257,35 @@ public class States {
     /// <param name="defence"></param>
     /// <param name="magic"></param>
     /// <param name="mind"></param>
-    public void IniLevelUpData(int life, int atack, int defence, int magic, int mind)
+    public void IniLevelUpData(string life, string atack, string defence, string magic, string mind)
     {
-        levelUpLife = life;
-        levelUpAtack = atack;
-        levelUpDefence = defence;
-        levelUpMagic = magic;
-        levelUpMind = mind;
+        levelUpLife = int.Parse(life);
+        levelUpAtack = int.Parse(atack);
+        levelUpDefence = int.Parse(defence);
+        levelUpMagic = int.Parse(magic);
+        levelUpMind = int.Parse(mind);
+    }
+
+    /// <summary>
+    /// ドロップアイテムのセット.
+    /// </summary>
+    public void DropItemSetting(string normal, string rare)
+    {
+        normalDropItemName = normal;
+        rareDropItemName = rare;
     }
     
+    /// <summary>
+    /// 行動ダイスのセッティング.
+    /// </summary>
+    /// <param name="_actionCount"></param>
+    /// <param name="iniActionPatternData"></param>
+    public void ActionDiceData(string _actionCount,string iniActionPatternData)
+    {
+        actionCount = int.Parse(_actionCount);
+        actionDicePatternName = iniActionPatternData;
+    }
+
     /// <summary>
     /// 行動ダイスの設定.
     /// </summary>
@@ -300,100 +298,15 @@ public class States {
         diceActions[diceNum].actions[4] = action5;
         diceActions[diceNum].actions[5] = action6;
     }
-    /*
-    /// <summary>
-    /// サイコロの情報をセットする.
-    /// </summary>
-    /// <param name="diceNum"></param>
-    /// <param name="action1"></param>
-    /// <param name="action2"></param>
-    /// <param name="action3"></param>
-    /// <param name="action4"></param>
-    /// <param name="action5"></param>
-    /// <param name="action6"></param>
-    public void IniActionDatas(string diceDataName)
-    {
-        int diceNum = 0;
-        foreach (DiceActions diceAction in DataSetting.diceActions)
-        {
-            if (diceAction.diceName == diceDataName)
-            {
-                break;
-            }
-            diceNum++;
-        }        
-        DiceSurfaceDataSet(diceActions[diceNum]);
-    }
-    /*
-    /// <summary>
-    /// アクションサイコロの行動設定.
-    /// </summary>
-    public void DiceSurfaceDataSet(DiceActions diceAction)
-    {
-        for (int diceFaceNum = 0;diceFaceNum < 6;diceFaceNum++)
-        {
-            switch (diceAction.actions[diceFaceNum])
-            {
-                case "戦う":
-                    diceAction.diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.ATACK;
-                    break;
-                case "防御":
-                    diceAction.diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.GUARD;
-                    break;
-                case "回避":
-                    diceAction.diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.DODGE;
-                    break;
-                case "ミス":
-                    diceAction.diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.MISS;
-                    break;
-                case "必殺の一撃":
-                    diceAction.diceSurfaceAction[diceFaceNum] = ActionList.ACTIONTYPE.CRITICAL;
-                    break;
-            }
-            if (diceAction.actions[diceFaceNum].Contains("魔法："))
-            {
-                SkillNameResetting("魔法：", diceFaceNum, ActionList.ACTIONTYPE.MAGICSKILL, diceAction);
-            }
-            if (diceAction.actions[diceFaceNum].Contains("特技："))
-            {
-                SkillNameResetting("特技：", diceFaceNum, ActionList.ACTIONTYPE.ATACKSKILL, diceAction);
-            }
-            if (diceAction.actions[diceFaceNum].Contains("強化："))
-            {
-                SkillNameResetting("強化：", diceFaceNum, ActionList.ACTIONTYPE.SUPPORTSKILL, diceAction);
-            }
-            if (diceAction.actions[diceFaceNum].Contains("弱体："))
-            {
-                SkillNameResetting("弱体：",diceFaceNum, ActionList.ACTIONTYPE.SUPPORTSKILL, diceAction);
-            }
-        }
-    }
-
-    /// <summary>
-    /// スキルデータの名前の再設定.
-    /// </summary>
-    /// <param name="outText"></param>
-    /// <param name="diceFaceNum"></param>
-    /// <param name="actionType"></param>
-    void SkillNameResetting(string outText,int diceFaceNum,ActionList.ACTIONTYPE actionType,DiceActions diceAction)
-    {
-        diceAction.actions[diceFaceNum] = diceAction.actions[diceFaceNum].Substring(outText.Length);
-        diceAction.diceSurfaceAction[diceFaceNum] = actionType;
-        skillSet.Add(DataSetting.SkillDataSetToStates(diceAction.actions[diceFaceNum]));
-    }
-    */
-
+  
     /// <summary>
     /// ダイスの表面とサイコロの情報の紐づけ設定.召喚するたびに呼び出して初期化する.
     /// </summary>
     /// <param name="dicePrefab"></param>
-    public void DiceSurfaceSetting(GameObject dicePrefab)
+    public void DiceSurfaceSetting(GameObject dicePrefab,int diceNum)
     {
         DiceSetting diceSetting = dicePrefab.GetComponent<DiceSetting>();
-        for (int diceNum = 0;diceNum < actionCount;diceNum++)
-        {
-            diceSetting.IniDiceSet(diceActions[diceNum].diceSurfaceAction);
-        }
+        diceSetting.IniDiceSet(diceActions[diceNum].diceSurfaceAction);
     }
 
     /// <summary>
@@ -404,6 +317,7 @@ public class States {
         level = GameLevelManager.nowDungeonHierarchy;
         StatesSet(level);
     }
+
     /// <summary>
     /// レベルを使ってステータスセット.
     /// </summary>

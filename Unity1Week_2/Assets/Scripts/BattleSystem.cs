@@ -19,16 +19,16 @@ public class BattleSystem : MonoBehaviour {
 
     public Text text;
     public bool isPlayerTurn;
-
+    
 	// Use this for initialization
 	void Start () {
         GameLevelManager.IniGameLevel();
-        dataSetting.IniDatas();
-        GetSummonEnemysData();
-        PlayerStatesSet();
+        //dataSetting.IniDatas();
+        //GetSummonEnemysData();
+        //PlayerStatesSet();
         //SpownEnemy("Gobrin");
     }
-
+    
     /// <summary>
     /// テスト用.
     /// </summary>
@@ -158,7 +158,6 @@ public class BattleSystem : MonoBehaviour {
             yield return Time.deltaTime;
         }
     }
-
     
     /// <summary>
     /// 行動決定からのターン処理.
@@ -331,10 +330,10 @@ public class BattleSystem : MonoBehaviour {
     /// <param name="dungeonNest"></param>
     public void EnemyStatesSet(GameLevelManager.DUNGEONNEST dungeonNest )
     {
-        foreach (DataSetting.CharactorData enemyData in dataSetting.enemyDatas)
+        foreach (States enemyData in dataSetting.enemyStates)
         {
             if(enemyData.nestNumber == dungeonNest.GetHashCode()){
-                States states = dataSetting.enemyStates[enemyData.number-1];
+                States states = dataSetting.enemyStates[enemyData.dataNumber-1];
                 battleJoinedEnemyStates.Add(states);
             }
         }
