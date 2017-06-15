@@ -11,11 +11,6 @@ public class DiceSurface : MonoBehaviour {
     [SerializeField]
     private DiceRoll diceRoll;
 
-    // Use this for initialization
-    void Start () {
-		
-	}
-
     /// <summary>
     /// 一番上の面の値を取得する.
     /// </summary>

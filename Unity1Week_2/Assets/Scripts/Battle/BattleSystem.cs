@@ -323,20 +323,22 @@ public class BattleSystem : MonoBehaviour {
         battleJoinedEnemyStates.Clear();
         EnemyStatesSet(GameLevelManager.dungeonNest);
     }
-
+    
     /// <summary>
     /// 敵のデータを格納する.
     /// </summary>
     /// <param name="dungeonNest"></param>
     public void EnemyStatesSet(GameLevelManager.DUNGEONNEST dungeonNest )
     {
-        foreach (States enemyData in dataSetting.enemyStates)
+        /*
+        foreach (States enemyData in alldatas.enemyStates)
         {
             if(enemyData.nestNumber == dungeonNest.GetHashCode()){
                 States states = dataSetting.enemyStates[enemyData.dataNumber-1];
                 battleJoinedEnemyStates.Add(states);
             }
         }
+        */
     }
 
     /// <summary>
@@ -344,7 +346,7 @@ public class BattleSystem : MonoBehaviour {
     /// </summary>
     public void PlayerStatesSet()
     {
-        playerStates = dataSetting.playerStates[0];
+        //playerStates = dataSetting.playerStates[0];
         playerStates.PlayerStatesSet();
         playerStates.NowStatesSetting();
     }

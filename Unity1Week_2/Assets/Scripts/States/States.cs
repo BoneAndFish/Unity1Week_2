@@ -57,7 +57,7 @@ public class States {
     public BadStates badStates = new BadStates();
 
     /// <summary>
-    /// サイコロのアクション設定.キャラによってサイコロの数が違う.
+    /// サイコロのアクション設定.キャラによってサイコロの数が違う.→サイコロの大きさとかも保存することに.
     /// </summary>
     [System.Serializable]
     public class DiceActions
@@ -65,6 +65,8 @@ public class States {
         public ActionList.ACTIONTYPE[] diceSurfaceAction = new ActionList.ACTIONTYPE[6];
         public string diceName = "None";
         public string[] actions = new string[6];
+        public float size;//大きさ
+        public float weight;//重さ
         public DiceActions(string actionName_1, string actionName_2, string actionName_3, string actionName_4, string actionName_5, string actionName_6)
         {
             actions[0] = actionName_1;
@@ -74,6 +76,7 @@ public class States {
             actions[4] = actionName_5;
             actions[5] = actionName_6;
         }
+        
     }
 
     /// <summary>

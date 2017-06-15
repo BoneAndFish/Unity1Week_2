@@ -35,6 +35,7 @@ public class DiceRoll : MonoBehaviour {
         rigidBody.AddForce(randomDirection * Random.Range(maxForce/2,maxForce),ForceMode.Impulse);
         rigidBody.AddTorque(randomDirection * maxForce*1.15f,ForceMode.Impulse);
     }
+
     /// <summary>
     /// 値が0のままならもう一度転がす.
     /// </summary>
