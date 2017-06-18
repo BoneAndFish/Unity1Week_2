@@ -15,6 +15,7 @@ public class DiceRoll : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         diceSurfaceInfo = 1;
+        
     }
 
     void FixedUpdate()
@@ -30,6 +31,7 @@ public class DiceRoll : MonoBehaviour {
     /// </summary>
     public void RollDice()
     {
+        diceSurfaceInfo = 0;
         diceRolled = false;
         Vector3 randomDirection = new Vector3(1f, Random.Range(0f, 1f), 1f);
         rigidBody.AddForce(randomDirection * Random.Range(maxForce/2,maxForce),ForceMode.Impulse);

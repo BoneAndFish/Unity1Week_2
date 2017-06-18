@@ -309,6 +309,7 @@ public class States {
     public void DiceSurfaceSetting(GameObject dicePrefab,int diceNum)
     {
         DiceSetting diceSetting = dicePrefab.GetComponent<DiceSetting>();
+        diceSetting.diceAction = diceActions[diceNum];
         diceSetting.IniDiceSet(diceActions[diceNum].diceSurfaceAction);
     }
 

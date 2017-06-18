@@ -5,8 +5,13 @@ using Action;
 
 public class DiceSetting : MonoBehaviour {
 
+    public States.DiceActions diceAction;
+
     [SerializeField]
     private ActionList.ACTIONTYPE[] actionType = new ActionList.ACTIONTYPE[6];
+
+    [SerializeField]
+    private DiceSurface[] diceSurfeces = new DiceSurface[6];
 
     [SerializeField]
     private SpriteRenderer[] spriteRenderer = new SpriteRenderer[6];

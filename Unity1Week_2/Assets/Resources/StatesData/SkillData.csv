@@ -1,0 +1,2 @@
+﻿SkillName,SkillNumber,Type,EffectType,EffectValue,TimerTime,BadStates,TurnCount
+ほのお,1,Magic,Damege,15,1.5,None,1

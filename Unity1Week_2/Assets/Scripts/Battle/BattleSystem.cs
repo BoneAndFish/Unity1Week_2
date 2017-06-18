@@ -15,10 +15,29 @@ public class BattleSystem : MonoBehaviour {
     public List<DiceRoll> actorBattleDiceRoll = new List<DiceRoll>();
     public List<States.DiceActions> actorBattleDiceAction = new List<States.DiceActions>();
 
+    public class CharactorAction
+    {
+        public int insertNum;
+        public States actorStates;
+        public States targetStates;
+        public States.DiceActions diceActions;
+        public CharactorAction(int _num,States _actor,States _target,States.DiceActions _action)
+        {
+            insertNum = _num;
+            actorStates = _actor;
+            targetStates = _target;
+            diceActions = _action;
+        }
+    }
+
+    public List<CharactorAction> charactorAction = new List<CharactorAction>();
+
     public DataSetting dataSetting;
 
     public Text text;
     public bool isPlayerTurn;
+
+    public int turnCount;
     
 	// Use this for initialization
 	void Start () {
@@ -157,6 +176,22 @@ public class BattleSystem : MonoBehaviour {
             time += Time.deltaTime;
             yield return Time.deltaTime;
         }
+    }
+
+    /// <summary>
+    /// 行動アクションを設定する.
+    /// </summary>
+    /// <param name="actor"></param>
+    /// <param name="target"></param>
+    void CharactorActionSet(States actor, States target)
+    {
+        for (int diceNum = 0; diceNum < actor.diceRoll.Count; diceNum++)
+        {
+            int diceSurfaceNumber = actorBattleDiceRoll[diceNum].diceSurfaceInfo - 1;
+            Debug.Log(diceSurfaceNumber);
+            ActionList.ACTIONTYPE actionType = actorBattleDiceAction[diceNum].diceSurfaceAction[diceSurfaceNumber];
+        }
+
     }
     
     /// <summary>

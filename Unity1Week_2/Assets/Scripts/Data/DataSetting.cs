@@ -25,7 +25,7 @@ public class DataSetting : MonoBehaviour {
         DiceDataSetting();
         //SetEnemyDatas();
         SetPlayerDatas();
-        //SetEnemyDatas();
+
         Invoke("TestDiceInstance", 1f);
     }
 	
@@ -382,7 +382,7 @@ public class DataSetting : MonoBehaviour {
     {
         string[] datas = dataLine.Split(new string[] { "," }, option);
         int count = 0;
-        skillDatas.Add(new SkillSet(datas[count++], datas[count++], datas[count++], datas[count++], datas[count++], datas[count++], datas[count++]));
+        skillDatas.Add(new SkillSet(datas[count++], datas[count++], datas[count++], datas[count++], datas[count++], datas[count++], datas[count++], datas[count++]));
     }
 
     /// <summary>

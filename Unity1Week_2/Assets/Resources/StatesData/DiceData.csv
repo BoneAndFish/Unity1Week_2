@@ -1,0 +1,6 @@
+﻿DiceName,Action1,Action2,Action3,Action4,Action5,Action6,Size,Weight
+Dicerot,必殺の一撃,戦う,戦う,ミス,ミス,戦う,1,1
+Gobrin,戦う,戦う,戦う,ミス,ミス,戦う,3,3
+FireLv1,魔法：ほのおLv1,ミス,魔法：ほのおLv1,ミス,ミス,魔法：ほのおLv1,1.2,0.8
+FireLv2,魔法：ほのおLv2,ミス,魔法：ほのおLv2,ミス,ミス,魔法：ほのおLv2,1.5,0.7
+PoizonLv1,魔法：どくLv1,ミス,ミス,魔法：どくLv1,ミス,魔法：どくLv1,1,1

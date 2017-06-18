@@ -11,6 +11,9 @@ public class DiceSurface : MonoBehaviour {
     [SerializeField]
     private DiceRoll diceRoll;
 
+    public int actionCount;
+    public DiceSetting diceSetting;
+
     /// <summary>
     /// 一番上の面の値を取得する.
     /// </summary>
@@ -22,6 +25,8 @@ public class DiceSurface : MonoBehaviour {
             Debug.Log("今一番上にあるのはコレ:"+getSurfaceNum);
             diceRoll.diceSurfaceInfo = getSurfaceNum;
             diceRoll.diceRolled = true;
+            actionCount = BattleManager.actionCount;
+            BattleManager.AddAction(diceSetting.diceAction);
         }
     }
     /// <summary>
@@ -31,6 +36,9 @@ public class DiceSurface : MonoBehaviour {
     {
         if (diceRoll.diceRolled != true) {
             diceRoll.diceSurfaceInfo = 0;
+            BattleManager.RemoveAction(actionCount);
         }
     }
+
+
 }

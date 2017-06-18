@@ -1,0 +1,2 @@
+﻿Number,NestNumber,Name,Type,GameName,LifePoint,Atack,Defence,Magic,Mind,LevelUpLife,LevelUpAtack,LevelUpDefence,LevelUpMagic,LevelUpMind,DropItem,RareDropItem,ActionCount,IniDiceName
+1,1,Gobrin,normal,したっぱゴブリン,6,4,2,1,1,3,2,1,1,1,木の剣,どんぐり,1,Gobrin
