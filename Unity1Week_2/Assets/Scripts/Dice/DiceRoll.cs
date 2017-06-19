@@ -5,7 +5,7 @@ using UnityEngine;
 public class DiceRoll : MonoBehaviour {
 
     [SerializeField]
-    private Rigidbody rigidBody;
+    public Rigidbody rigidBody;
     public float maxForce;
 
     public int diceSurfaceInfo = 1;
@@ -14,16 +14,7 @@ public class DiceRoll : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        diceSurfaceInfo = 1;
-        
-    }
-
-    void FixedUpdate()
-    {
-        if (rigidBody.velocity.magnitude == 0)
-        {
-            DecideDiceNum();
-        }
+        diceSurfaceInfo = 1;        
     }
 
     /// <summary>
@@ -41,7 +32,7 @@ public class DiceRoll : MonoBehaviour {
     /// <summary>
     /// 値が0のままならもう一度転がす.
     /// </summary>
-    void DecideDiceNum()
+    public void DecideDiceNum()
     {
         if (diceSurfaceInfo == 0)
         {

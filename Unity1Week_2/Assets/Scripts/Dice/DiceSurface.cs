@@ -14,21 +14,33 @@ public class DiceSurface : MonoBehaviour {
     public int actionCount;
     public DiceSetting diceSetting;
 
+    
+    void FixedUpdate()
+    {
+        if (diceRoll.rigidBody.velocity.magnitude == 0 && diceRoll.diceRolled != true)
+        {
+            diceRoll.DecideDiceNum();
+        }
+    }
+    
     /// <summary>
     /// 一番上の面の値を取得する.
     /// </summary>
-    void OnTriggerEnter()
-    {
-        if (diceRoll.diceSurfaceInfo == 0)
+    void OnTriggerStay()
+    {        
+        if (diceRoll.rigidBody.velocity.magnitude == 0 && diceRoll.diceRolled != true)
         {
             int getSurfaceNum = (7 - thisSurfaceNum);
             Debug.Log("今一番上にあるのはコレ:"+getSurfaceNum);
             diceRoll.diceSurfaceInfo = getSurfaceNum;
-            diceRoll.diceRolled = true;
             actionCount = BattleManager.actionCount;
+            BattleManager.addDiceActions = diceSetting.diceAction;
             BattleManager.AddAction(diceSetting.diceAction);
+            diceRoll.diceRolled = true;
+            diceRoll.DecideDiceNum();
         }
     }
+
     /// <summary>
     /// 地面から離れたら0を返して何もとれてないことを伝える.
     /// </summary>
@@ -36,9 +48,8 @@ public class DiceSurface : MonoBehaviour {
     {
         if (diceRoll.diceRolled != true) {
             diceRoll.diceSurfaceInfo = 0;
+            Debug.Log("aaa");
             BattleManager.RemoveAction(actionCount);
         }
     }
-
-
 }

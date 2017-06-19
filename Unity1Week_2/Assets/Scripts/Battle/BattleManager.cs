@@ -7,8 +7,8 @@ public class BattleManager : MonoBehaviour {
     public static int actionCount;
     public int turnCount;
 
-    static States actor;
-    static States target;
+    public static States actor;
+    public static States target;
 
     public DataSetting dataSetting;
 
@@ -33,6 +33,8 @@ public class BattleManager : MonoBehaviour {
 
     public List<CharactorAction> charactorAction = new List<CharactorAction>();
     public static List<CharactorAction> static_charactorAction = new List<CharactorAction>();
+
+    public static States.DiceActions addDiceActions;
 
     // Use this for initialization
     void Start () {
@@ -127,9 +129,12 @@ public class BattleManager : MonoBehaviour {
             }
         }
         static_charactorAction.Remove(removeActionData);
-
     }
 
+    /// <summary>
+    /// アクションの追加.サイコロが完全に停止したときに実行する.
+    /// </summary>
+    /// <param name="diceAction"></param>
     public static void AddAction(States.DiceActions diceAction)
     {
         CharactorAction addActionData = new CharactorAction(actionCount,
