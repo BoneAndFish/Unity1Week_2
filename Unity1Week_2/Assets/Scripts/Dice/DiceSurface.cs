@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DiceSurface : MonoBehaviour {
 
-    [SerializeField]
+    //[SerializeField]
     public int thisSurfaceNum;
     [SerializeField]
     private int diceNum;
@@ -35,7 +35,7 @@ public class DiceSurface : MonoBehaviour {
             diceRoll.diceSurfaceInfo = getSurfaceNum;
             actionCount = BattleManager.actionCount;
             BattleManager.addDiceActions = diceSetting.diceAction;
-            BattleManager.AddAction(diceSetting.diceAction);
+            BattleManager.AddAction(diceSetting.diceAction,getSurfaceNum);
             diceRoll.diceRolled = true;
             diceRoll.DecideDiceNum();
         }

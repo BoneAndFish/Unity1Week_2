@@ -10,23 +10,39 @@ public class BattleManager : MonoBehaviour {
     public static States actor;
     public static States target;
 
-    public DataSetting dataSetting;
+    public static DataSetting dataSetting;
 
     [System.Serializable]
     public class CharactorAction
     {
         public int insertNum;
+        public int surfaceNum;
         public States actorStates;
         public States targetStates;
+        public int actionTurn;
         public States.DiceActions diceActions;
-        public CharactorAction(int _num, States _actor, States _target, States.DiceActions _action)
+        public SkillSet skillSet;
+        public CharactorAction(int _num,int _surfaceNum, States _actor, States _target, States.DiceActions _action)
         {
             insertNum = _num;
+            surfaceNum = _surfaceNum;
             actorStates = _actor;
             targetStates = _target;
             diceActions = _action;
         }
-        public CharactorAction(){}        
+        public CharactorAction(){}
+        
+        public void GetSkillData()
+        {
+            foreach (SkillSet _skillSet in dataSetting.alldatas.skillDatas) {
+                if (diceActions.actions[surfaceNum] == skillSet.skillName)
+                {
+                    skillSet = _skillSet;
+                    actionTurn = skillSet.activeTurnCount;
+                }
+            }
+        }
+
     }
 
     public List<DiceRoll> actorBattleDiceRoll = new List<DiceRoll>();
@@ -45,11 +61,37 @@ public class BattleManager : MonoBehaviour {
     {
         actor = dataSetting.alldatas.playerStates[0];
         target = dataSetting.alldatas.playerStates[0];
-        actorBattleDiceRoll.Add(dataSetting.alldatas.playerStates[0].diceRoll[0]);       
+        actorBattleDiceRoll.Add(dataSetting.alldatas.playerStates[0].diceRoll[0]);
     }
 
     /// <summary>
-    /// サイコロを転がす.
+    /// 行動者のステータスをセット.ボタンとかに情報を送る.
+    /// </summary>
+    /// <param name="actorName">行動者の名前</param>
+    public void ActorStatesSet(string actorName)
+    {
+        foreach (States states in dataSetting.alldatas.playerStates)
+        {
+            if (actorName == states.dataName)
+            {
+                actor = states;//行動者のステータスをセット.
+            }
+        }
+    }
+
+    /// <summary>
+    /// 行動者のdicerollスクリプトを取得する.dicerollは出現時のみ追加される.
+    /// </summary>
+    public void ActorDiceRollSet(string diceName)
+    {
+        foreach (DiceRoll diceRoll in actor.diceRoll)
+        {
+            actorBattleDiceRoll.Add(diceRoll);            
+        }
+    }
+
+    /// <summary>
+    /// サイコロを転がす.ボタンで処理.
     /// </summary>
     /// <param name="actor"></param>
     /// <param name="target"></param>
@@ -73,13 +115,11 @@ public class BattleManager : MonoBehaviour {
         while (isSetOk == false)
         {
             isSetOk = IsAtackPrepareComplete(actor);
-            //Debug.Log(isSetOk);
             yield return null;
         }
-
         charactorAction = static_charactorAction;
-
     }
+
     /// <summary>
     /// 攻撃準備完了かどうか.サイコロを全て振る.
     /// </summary>
@@ -106,18 +146,45 @@ public class BattleManager : MonoBehaviour {
         }
     }
 
-    void BattleStart()
+    /// <summary>
+    /// 行動するまでの時間.ターン数減少.ターン開始時に処理.
+    /// </summary>
+    void ActionTurnDecrease()
     {
+        foreach (CharactorAction charactorAction in static_charactorAction)
+        {
+            charactorAction.actionTurn--;
+        }
+    }
 
+    /// <summary>
+    /// 行動ターン数が0になったダイスから行動を処理していく.
+    /// </summary>
+    void ActionProcess()
+    {
+        foreach (CharactorAction _charactorAction in static_charactorAction)
+        {
+            if (_charactorAction.actionTurn == 0)
+            {
+                Action(_charactorAction);
+            }
+        }
+        static_charactorAction = charactorAction;
+    }
 
-
+    /// <summary>
+    /// 実行動部分
+    /// </summary>
+    void Action(CharactorAction charactorAction)
+    {
+        
     }
 
     /// <summary>
     /// アクションの削除.サイコロが飛ばされたときとかに行動をキャンセルする.
     /// </summary>
     /// <param name="actionNum"></param>
-   public static void RemoveAction(int actionNum)
+    public static void RemoveAction(int actionNum)
     {
         CharactorAction removeActionData = new CharactorAction();
         foreach (CharactorAction action in static_charactorAction)
@@ -135,12 +202,14 @@ public class BattleManager : MonoBehaviour {
     /// アクションの追加.サイコロが完全に停止したときに実行する.
     /// </summary>
     /// <param name="diceAction"></param>
-    public static void AddAction(States.DiceActions diceAction)
+    public static void AddAction(States.DiceActions diceAction,int surfaceNum)
     {
         CharactorAction addActionData = new CharactorAction(actionCount,
+                                                            surfaceNum,
                                                             actor,
                                                             target,
                                                             diceAction);
+        addActionData.GetSkillData();
         static_charactorAction.Add(addActionData);
         Debug.Log("追加しました");
         actionCount++;
